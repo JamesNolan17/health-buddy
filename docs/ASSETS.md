@@ -1,6 +1,6 @@
 # docs/ 里的图片 / Visual assets
 
-项目名 healthy-wealthy 取自 “healthy, wealthy and wise”；中文名「身家管家」（身 = 健康，身家 = 钱）。
+项目名 healthy-wealthy 取自 “healthy, wealthy and wise”；中文名「又健又富」= healthy and wealthy，和英文名直接对应。
 
 所有图片都是**示意图（mock-up），不是真实截图**，里面的金额、卡号、商家、时间都是虚构的；饭照是作者自己的两张午饭照片（已去除元数据），热量/营养数字是 agent 当时的真实估算。
 All images are mock-ups, not real screenshots; every number in them is fictional.

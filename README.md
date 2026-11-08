@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🩺💰 healthy-wealthy · 身家管家
+# 🩺💰 healthy-wealthy · 又健又富
 
 **健康 + 钱包，一个本地运行的 AI 管家全管了。**
 
@@ -236,7 +236,7 @@ flowchart LR
 - **一切都在 `/data`**：备份这一个文件夹就够了；x86 NAS ↔ ARM VPS 直接拷过去
 
 <details>
-<summary><b>📸 作者和自己身家管家的 7 个真实故事（数字已改成虚构值，点开看）</b></summary>
+<summary><b>📸 作者和自己「又健又富」的 7 个真实故事（数字已改成虚构值，点开看）</b></summary>
 
 **① 从零到通：看截图，手把手带着设置**
 

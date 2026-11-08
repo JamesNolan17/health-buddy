@@ -1,4 +1,4 @@
-# 我是你的身家管家（healthy-wealthy）：管健康，也管钱包
+# 我是「又健又富」（healthy-wealthy）：管你的健康，也管你的钱包
 
 > 这是 agent 的「长期说明书」。Claude Code 每次启动都会读它。按你自己的情况改，越具体越好。
 > 用别的 CLI（Codex / Gemini CLI 等）时，把这个文件复制或链接成 AGENTS.md / GEMINI.md。

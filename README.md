@@ -15,7 +15,7 @@
 ![Telegram](https://img.shields.io/badge/chat-Telegram-26A5E4?logo=telegram&logoColor=white)
 ![Agent](https://img.shields.io/badge/agent-Claude%20Code%20%7C%20Anthropic--compatible%20models-111)
 
-<img src="docs/demo.gif" width="440" alt="示意动画：刷卡 8 秒后机器人来问喝了啥，发小票照片后自动记下热量和这笔账">
+<img src="docs/demo.zh.gif" width="440" alt="示意动画：刷卡 8 秒后机器人来问喝了啥，发小票照片后自动记下热量和这笔账">
 
 <sub>示意动画，不是真实截图；金额和热量都是虚构的。</sub>
 
@@ -42,7 +42,7 @@
 | 🧋 15:06 | 刷卡 S$4.20 → 10 秒内：“在奶茶店花了 4.2，喝了啥？几分糖？” |
 | 🤒 某天 | “静息心率连续两天高了 9 下，手腕温度也高，可能要感冒了，今晚早点睡” |
 | 🌙 23:00 | “离睡觉目标还有 1 小时。” 你不理它？23:30、00:00……直到你说“晚安” |
-| 📅 每月 1 号 | “上个月吃饭 S$5██，奶茶 █ 杯 S$3█，外卖比上月少 3 次 👍” |
+| 📅 每月 1 号 | “上个月吃饭 S$560，奶茶 9 杯 S$38，外卖比上月少 3 次 👍” |
 
 > 以上时间是默认时间表（`schedules.json`），在聊天里一句话就能让它改。
 
@@ -165,7 +165,7 @@ docker compose logs -f        # 看到 "health-buddy up" 就好了
 - **一切都在 `/data`**：备份这一个文件夹就够了；x86 NAS ↔ ARM VPS 直接拷过去
 
 <details>
-<summary><b>📸 作者和自己 health-buddy 的 7 个真实故事（关键数字已打码，点开看）</b></summary>
+<summary><b>📸 作者和自己 health-buddy 的 7 个真实故事（数字已改成虚构值，点开看）</b></summary>
 
 **① 从零到通：看截图，手把手带着设置**
 
@@ -180,7 +180,7 @@ sequenceDiagram
     U->>H: [截图：URL 填好了]
     H-->>U: ✅ 网址对了。下一步填密钥，截图前先把键盘收起来 😉
     U->>H: 我把从出生到现在的数据都传了，2%
-    H-->>U: 📬 收到 ██ 万条，从 20██ 年开始。先帮你建个人基线
+    H-->>U: 📬 收到 48 万条，从 2019 年开始。先帮你建个人基线
 ```
 
 **② 一顿午饭：催 → 拍 → 算 → 自动记账**
@@ -197,7 +197,7 @@ sequenceDiagram
     H-->>U: 🍗 约 600 kcal，蛋白 58g，焦皮撕掉能少 100
     U->>H: 饭吃了 2/3，薄脆剩 1 片
     H-->>U: 📊 这顿约 1300 kcal，晚饭还剩 600
-    B->>H: A transaction of SGD ██.██ … at ████
+    B->>H: A transaction of SGD 18.50 … at FOOD COURT
     H-->>U: 💰 对上午饭了，饭钱记好了，不用你报
 ```
 
@@ -221,7 +221,7 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     A[静息心率比 30 天中位数高 ≥6<br/>连续 2 天以上] --> B{手腕温度也高？}
-    B -- 是 --> C[🤒 疑似生病<br/>20██-09、20██-02、20██-07]
+    B -- 是 --> C[🤒 疑似生病<br/>2023-09、2024-02、2025-07]
     B -- 否 --> D[问一句：出远门了？]
     C --> E[我：对！三次都发烧了]
     D --> F[我：那次是去高原玩<br/>→ 记成例外]
@@ -233,10 +233,10 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph Uni["🎓 大学 4 年（越来越差）"]
-      a1[入睡 0:5█ → 2:█9]
-      a2[静息心率 6█ → 7█]
-      a3[HRV 3█ → 2█]
-      a4[站立小时 1█ → █]
+      a1[入睡 0:55 → 2:19]
+      a2[静息心率 62 → 71]
+      a3[HRV 38 → 27]
+      a4[站立小时 12 → 8]
     end
     subgraph After["💼 毕业后"]
       b1[步数、运动分钟 ✅ 全面翻盘]
@@ -262,7 +262,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     A[我：嗓子痒好多年了<br/>鼻涕倒流，空调冷了就咳] --> B[体检：炎症指标正常]
-    A --> C[Home Assistant：卧室湿度 7█%]
+    A --> C[Home Assistant：卧室湿度 72%]
     C --> D[湿度 > 60% 尘螨最爱]
     B & D --> E[建议：去 ENT 查过敏原、洗鼻、防螨<br/>先观察几晚再决定买不买除湿机]
 ```

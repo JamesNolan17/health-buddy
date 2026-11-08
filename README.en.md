@@ -15,7 +15,7 @@ Your data stays on your own disk, and it only listens to you.
 ![Telegram](https://img.shields.io/badge/chat-Telegram-26A5E4?logo=telegram&logoColor=white)
 ![Agent](https://img.shields.io/badge/agent-Claude%20Code%20%7C%20Anthropic--compatible%20models-111)
 
-<img src="docs/demo.gif" width="440" alt="Mock-up animation: 8 seconds after a card tap the bot asks what you bought; you send a receipt photo and it logs the calories and the expense">
+<img src="docs/demo.en.gif" width="440" alt="Mock-up animation: 8 seconds after a card tap the bot asks what you bought; you send a receipt photo and it logs the calories and the expense">
 
 <sub>Mock-up animation, not a real screenshot. Amounts and calories are fictional.</sub>
 
@@ -42,7 +42,7 @@ Under the hood it is **Claude Code (or any CLI agent) + a ~200-line, zero-depend
 | 🧋 15:06 | Card charged S$4.20 → within 10 s: "4.20 at a tea shop — what did you get? Sugar level?" |
 | 🤒 one day | "Resting HR +9 for two days and wrist temp is up — you may be getting sick. Sleep early tonight." |
 | 🌙 23:00 | "One hour to your bedtime goal." Ignore it? 23:30, 00:00 … until you say good night |
-| 📅 1st of month | "Last month: food S$5██, █ bubble teas S$3█, 3 fewer deliveries 👍" |
+| 📅 1st of month | "Last month: food S$560, 9 bubble teas S$38, 3 fewer deliveries 👍" |
 
 > These are the default schedule (`schedules.json`); one sentence in chat changes it.
 
@@ -165,7 +165,7 @@ First make the inbox reachable from your phone: set `INBOX_BIND` in `.env` to th
 - **Everything lives in `/data`** — back up one folder; move between an x86 NAS and an ARM VPS by copying it
 
 <details>
-<summary><b>📸 Seven real stories from the author's own health-buddy (numbers masked, translated — click to expand)</b></summary>
+<summary><b>📸 Seven real stories from the author's own health-buddy (numbers replaced with fictional values, translated — click to expand)</b></summary>
 
 **① Zero to working, guided by screenshots**
 
@@ -180,7 +180,7 @@ sequenceDiagram
     U->>H: [screenshot: URL filled in]
     H-->>U: ✅ URL is correct. Next the secret — hide the keyboard before the screenshot 😉
     U->>H: Uploading everything since I was born… 2%
-    H-->>U: 📬 ██0k records back to 20██. Building your personal baseline
+    H-->>U: 📬 480k records back to 2019. Building your personal baseline
 ```
 
 **② One lunch: nudge → photo → estimate → auto-bookkeeping**
@@ -197,7 +197,7 @@ sequenceDiagram
     H-->>U: 🍗 ≈600 kcal, 58 g protein — peel the charred skin to save 100
     U->>H: Ate 2/3 of the rice, one papadum left
     H-->>U: 📊 ≈1300 kcal this meal, 600 left for dinner
-    B->>H: A transaction of SGD ██.██ … at ████
+    B->>H: A transaction of SGD 18.50 … at FOOD COURT
     H-->>U: 💰 Matched to lunch. Logged — no need to tell me
 ```
 
@@ -221,7 +221,7 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     A[Resting HR ≥ 30-day median + 6<br/>for 2+ days] --> B{Wrist temp up too?}
-    B -- yes --> C[🤒 likely sick<br/>20██-09, 20██-02, 20██-07]
+    B -- yes --> C[🤒 likely sick<br/>2023-09, 2024-02, 2025-07]
     B -- no --> D[Ask: were you travelling?]
     C --> E[Me: yes! fever all three times]
     D --> F[Me: that was a high-altitude trip<br/>→ marked as exception]
@@ -233,10 +233,10 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph Uni["🎓 4 years of university (sliding)"]
-      a1[asleep 0:5█ → 2:█9]
-      a2[resting HR 6█ → 7█]
-      a3[HRV 3█ → 2█]
-      a4[stand hours 1█ → █]
+      a1[asleep 0:55 → 2:19]
+      a2[resting HR 62 → 71]
+      a3[HRV 38 → 27]
+      a4[stand hours 12 → 8]
     end
     subgraph After["💼 after graduating"]
       b1[steps, exercise ✅ fully recovered]
@@ -262,7 +262,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     A[Me: itchy throat for years<br/>post-nasal drip, cough when AC is cold] --> B[Lab: inflammation markers normal]
-    A --> C[Home Assistant: bedroom humidity 7█%]
+    A --> C[Home Assistant: bedroom humidity 72%]
     C --> D[> 60 % is dust-mite heaven]
     B & D --> E[Suggest: see ENT for allergy tests, nasal rinse, mite control<br/>watch a few nights before buying a dehumidifier]
 ```

@@ -1,0 +1,8 @@
+[
+  {
+    "bank": "UOB (Singapore)",
+    "example": "A transaction of SGD 12.34 was made with your UOB Card ending 1234 on 01/01/26 at SOME SHOP. If unauthorised, call 24/7 Fraud Hotline now",
+    "regex": "A transaction of (?P<currency>[A-Z]{3}) (?P<amount>[0-9][0-9,]*\\.[0-9]{2}) was made with your UOB Card ending (?P<card>\\d{4}) on (?P<date>\\d{2}/\\d{2}/\\d{2}) at (?P<merchant>.+?)\\s*\\. If unauthorised",
+    "date_format": "dd/mm/yy"
+  }
+]

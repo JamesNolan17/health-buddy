@@ -1,0 +1,15 @@
+{
+  "url": "http://homeassistant.local:8123",
+  "direct": true,
+  "snap_numbers": {
+    "temp": "sensor.bedroom_temperature",
+    "humidity": "sensor.bedroom_humidity",
+    "co2": "sensor.bedroom_co2",
+    "pm25": "sensor.bedroom_pm2_5"
+  },
+  "snap_states": {
+    "ac": "climate.bedroom_ac",
+    "light": "light.bedroom",
+    "sleep_mode": "input_boolean.sleep_mode"
+  }
+}

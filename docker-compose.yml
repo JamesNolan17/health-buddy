@@ -1,0 +1,12 @@
+services:
+  health-buddy:
+    build: .
+    container_name: health-buddy
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data            # 所有数据都在这里，备份它就够了 / back this up
+    ports:
+      # 收件口。强烈建议只绑在 Tailscale / 内网 IP 上，别直接暴露到公网
+      # Bind to your Tailscale / LAN IP only — do NOT expose raw HTTP to the internet
+      - "127.0.0.1:8790:8790"

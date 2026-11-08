@@ -1,0 +1,37 @@
+[
+ {
+  "id": "morning",
+  "cron": "0 9 * * *",
+  "prompt": "早报：先运行 python3 -I bin/ingest.py。用 sleep / metrics 表看昨晚睡眠（入睡、起床、时长、深睡/REM）、静息心率、HRV、昨天步数，和近 30 天基线比，发一份简短早报。按 NOTES.md 里的睡眠目标对账。持续异常要提醒，但不下诊断。没有数据就简短说明。"
+ },
+ {
+  "id": "lunch",
+  "cron": "15 12 * * *",
+  "prompt": "午饭提醒：用 bin/hdb.py sql 查今天 10:00 以后有没有午饭记录。有就只回 👍；没有就简短催主人去吃饭，吃上了拍第一份主菜给我。"
+ },
+ {
+  "id": "dinner",
+  "cron": "30 18 * * *",
+  "prompt": "晚饭提醒：查今天 16:00 以后有没有晚饭记录。有就只回 👍；没有就催主人去吃晚饭并拍照。可结合今天已吃热量建议吃多少。"
+ },
+ {
+  "id": "workout",
+  "cron": "0 21 * * *",
+  "prompt": "运动打卡：查 workouts 表和今天的步数/运动分钟。没练就简短问一句；练了就夸一句。"
+ },
+ {
+  "id": "sleep-warn",
+  "cron": "0 23 * * *",
+  "prompt": "睡前预告：先运行 bin/night.py check，输出 SLEPT 就只回“嘘”。否则提醒主人按 NOTES.md 的睡眠目标开始收尾，上床时跟我说“晚安”。"
+ },
+ {
+  "id": "sleep-go",
+  "cron": "30 23 * * *",
+  "prompt": "上床提醒：先运行 bin/night.py check，输出 SLEPT 就只回“嘘”。否则简短坚定地催主人上床。"
+ },
+ {
+  "id": "monthly",
+  "cron": "30 9 1 * *",
+  "prompt": "月度小结：先跑 bin/pay_ingest.py，用 bin/spend.py month <上个月> 汇总上月消费（按分类、Top 商家），再结合 meals 表说说饮料/甜品次数和平均每天热量，和再上个月比。简短、有趣、给一条下月建议。"
+ }
+]

@@ -1,0 +1,4 @@
+[
+  {"every_min": 10, "cmd": ["python3", "-I", "bin/ingest.py"]},
+  {"every_min": 10, "cmd": ["python3", "-I", "bin/pay_ingest.py"]}
+]

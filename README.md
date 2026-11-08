@@ -147,16 +147,24 @@ docker compose logs -f        # 看到 "health-buddy up" 就好了
 
 ## 它是怎么工作的
 
-```
- iPhone ──Health Auto Export──┐
- iPhone ──快捷指令(扣款短信)──┼──► POST /health /pay /ha ──► /data/inbox/<source>/*.json
- Home Assistant ──────────────┘        (bridge 收件口，Bearer 鉴权)        │
-                                                                            │ 后台导入 / 收件即唤醒
- 你 ◄──► Telegram ◄──► bridge/app.py ◄──► agent CLI（Claude Code 等） ◄──► /data/work
-                         ▲   定时器 schedules.json                         ├ CLAUDE.md  长期说明书
-                         └── 后台任务 background.json                      ├ NOTES.md   agent 自己的笔记
-                                                                            ├ bin/*.py   工具
-                                                                            └ db/health.db  SQLite
+```mermaid
+flowchart LR
+    subgraph 数据来源
+      A1[📱 iPhone<br/>Health Auto Export]
+      A2[📱 iPhone 快捷指令<br/>扣款短信]
+      A3[🏠 Home Assistant]
+    end
+    A1 & A2 & A3 -- "POST /health /pay /ha<br/>Bearer 鉴权" --> IN[(📥 /data/inbox/&lt;source&gt;/*.json)]
+    IN -- 后台导入 / 收件即唤醒 --> BR
+    U[🙋 你] <--> TG[💬 Telegram] <--> BR[🔌 bridge/app.py<br/>定时器 schedules.json<br/>后台任务 background.json]
+    BR <--> AG[🤖 agent CLI<br/>Claude Code 等]
+    AG <--> W
+    subgraph W [📁 /data/work]
+      W1[CLAUDE.md 长期说明书]
+      W2[NOTES.md agent 自己的笔记]
+      W3[bin/*.py 工具]
+      W4[(db/health.db SQLite)]
+    end
 ```
 
 - 整体 = **Claude Code（或任意命令行 agent）+ 一个 200 多行、零依赖的 Python 桥接程序**。没有框架，没有第三方库

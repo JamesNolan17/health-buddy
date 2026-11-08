@@ -147,16 +147,24 @@ First make the inbox reachable from your phone: set `INBOX_BIND` in `.env` to th
 
 ## How it works
 
-```
- iPhone ──Health Auto Export──┐
- iPhone ──Shortcuts (bank SMS)┼──► POST /health /pay /ha ──► /data/inbox/<source>/*.json
- Home Assistant ──────────────┘      (bridge inbox, Bearer auth)          │
-                                                                          │ background import / wake-on-inbox
- You ◄──► Telegram ◄──► bridge/app.py ◄──► agent CLI (Claude Code …) ◄──► /data/work
-                          ▲  scheduler: schedules.json                    ├ CLAUDE.md   long-term handbook
-                          └─ background jobs: background.json             ├ NOTES.md    agent's own notes
-                                                                          ├ bin/*.py    tools
-                                                                          └ db/health.db SQLite
+```mermaid
+flowchart LR
+    subgraph Sources
+      A1[📱 iPhone<br/>Health Auto Export]
+      A2[📱 iPhone Shortcuts<br/>bank SMS]
+      A3[🏠 Home Assistant]
+    end
+    A1 & A2 & A3 -- "POST /health /pay /ha<br/>Bearer auth" --> IN[(📥 /data/inbox/&lt;source&gt;/*.json)]
+    IN -- background import / wake-on-inbox --> BR
+    U[🙋 You] <--> TG[💬 Telegram] <--> BR[🔌 bridge/app.py<br/>scheduler: schedules.json<br/>background jobs: background.json]
+    BR <--> AG[🤖 agent CLI<br/>Claude Code …]
+    AG <--> W
+    subgraph W [📁 /data/work]
+      W1[CLAUDE.md long-term handbook]
+      W2[NOTES.md agent's own notes]
+      W3[bin/*.py tools]
+      W4[(db/health.db SQLite)]
+    end
 ```
 
 - The whole thing = **Claude Code (or any CLI agent) + a ~200-line, zero-dependency Python bridge**. No framework, no third-party libraries

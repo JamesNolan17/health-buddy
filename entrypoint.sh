@@ -3,7 +3,7 @@
 set -e
 mkdir -p /data/work /data/inbox /data/home /data/state
 cp -rn /app/workspace-template/. /data/work/
-mkdir -p /data/work/db /data/work/files /data/work/logs /data/work/inbox
+mkdir -p /data/work/db /data/work/files /data/work/logs /data/work/inbox /data/work/state
 [ -f /data/setup.sh ] || printf '#!/bin/bash\n# 开机脚本：每次启动以 root 执行，要幂等。agent 装了软件会写在这里。\n' > /data/setup.sh
 chmod +x /data/setup.sh && /data/setup.sh || echo "setup.sh failed (continuing)"
 chown -R agent:agent /data

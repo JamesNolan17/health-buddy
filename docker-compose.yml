@@ -7,6 +7,7 @@ services:
     volumes:
       - ./data:/data            # 所有数据都在这里，备份它就够了 / back this up
     ports:
-      # 收件口。强烈建议只绑在 Tailscale / 内网 IP 上，别直接暴露到公网
-      # Bind to your Tailscale / LAN IP only — do NOT expose raw HTTP to the internet
-      - "127.0.0.1:8790:8790"
+      # 收件口（HTTP）。默认只绑 127.0.0.1，手机访问不到；在 .env 里把 INBOX_BIND 改成你的 Tailscale IP（100.x.x.x）或内网 IP。
+      # 别直接暴露到公网 / Inbox (plain HTTP). Defaults to 127.0.0.1 — set INBOX_BIND in .env to your Tailscale or LAN IP.
+      # Never expose it to the internet without HTTPS in front.
+      - "${INBOX_BIND:-127.0.0.1}:${INBOX_PORT:-8790}:${INBOX_PORT:-8790}"

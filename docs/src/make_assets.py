@@ -283,8 +283,8 @@ def scripts(lang):
                    "🍗 Tandoori chicken ×4 (bone-in) · mint chutney · cucumber & carrot\nHigh protein; peel the charred skin to save ~100 kcal — one fist of rice is enough", "12:24")),
         ("bot", ("📒 已记：午饭 · 今天累计 1,190 / 1,900 大卡，蛋白 82 g ✅\n晚饭还有约 700 大卡：多点蔬菜，主食别太多" if zh else
                  "📒 Logged: lunch · today 1,190 / 1,900 kcal, protein 82 g ✅\nAbout 700 kcal left for dinner — plenty of veg, go easy on the carbs", "12:24")),
-        ("user", ("皮撕掉了，饭吃了一小碗" if zh else "peeled the skin, had a small bowl of rice", "12:52")),
-        ("bot", ("👍 改成约 500 + 150 = 650 大卡，今天累计 1,240" if zh else "👍 Updated: ≈500 + 150 = 650 kcal, today 1,240", "12:52")),
+        ("user", ("吃了 2/3 吧" if zh else "ate about 2/3 of it", "12:52")),
+        ("bot", ("👍 改成约 400 大卡（蛋白 39 g），今天累计 990，晚饭可以宽松点" if zh else "👍 Updated: ≈400 kcal (protein 39 g), today 990 — dinner can be a bit bigger", "12:52")),
         ("sys", "✅ 一张照片，热量、营养、花销都记好了" if zh else "✅ One photo — calories, macros and cost all logged"),
     ]
     bars = chart_bars(CW - 20, 180, lang)

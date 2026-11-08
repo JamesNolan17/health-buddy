@@ -2,12 +2,13 @@
 
 项目名 healthy-wealthy 取自 “healthy, wealthy and wise”；中文名「身家管家」（身 = 健康，身家 = 钱）。
 
-所有图片都是**示意图（mock-up），不是真实截图**，里面的饭、金额、热量、时间都是虚构的，饭照是程序画的插画。
+所有图片都是**示意图（mock-up），不是真实截图**，里面的金额、卡号、商家、时间都是虚构的；饭照是作者自己的两张午饭照片（已去除元数据），热量/营养数字是 agent 当时的真实估算。
 All images are mock-ups, not real screenshots; every number in them is fictional.
 
 | 文件 | 用途 |
 |---|---|
-| `social-preview.png` | 1280×640，GitHub 仓库的 Social preview（Settings → Social preview 手动上传） |
+| `social-preview.png` | 1280×640，国际版：英文在前的中英双语大标题、英文手机对话。GitHub 仓库的 Social preview（Settings → Social preview 手动上传），也用于 X / HN |
+| `social-preview.zh.png` | 1280×640，中文优先版：中文大标题 + 中文手机对话，给 V2EX / 小红书 / 即刻等中文渠道 |
 | `demo-meal.*.gif` | 饭照 → 热量/营养分析（README 顶部 2×2 网格，zh / en 各一份） |
 | `demo-ledger.*.gif` | 刷卡自动记账 → 晚间账单图 → 信用卡最低消费提醒 |
 | `demo-sleep.*.gif` | 催睡到说“晚安” → 早报用手表对账（含 7 晚入睡时间图） |

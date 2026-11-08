@@ -25,7 +25,7 @@ Send it a photo of your meal and it tells you the calories and macros; every car
 </tr>
 </table>
 
-<sub>All mock-up animations, not real screenshots; meals, amounts and values are fictional.</sub>
+<sub>All mock-up animations, not real screenshots; the meal photos are the author's own lunches, amounts and card numbers are fictional.</sub>
 
 </div>
 

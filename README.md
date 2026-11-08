@@ -16,16 +16,16 @@
 
 <table>
 <tr>
-<td align="center" width="50%"><img src="docs/demo-meal.zh.gif" width="100%" alt="示意动画：拍一张饭照，识别食物、估算热量和蛋白/碳水/脂肪，记进今天的累计"><br><sub>🍱 拍饭照 → 热量、营养、下一顿建议</sub></td>
-<td align="center" width="50%"><img src="docs/demo-ledger.zh.gif" width="100%" alt="示意动画：刷卡短信自动记账，熟店只问一句，晚间账单配图，信用卡最低消费提醒"><br><sub>💳 刷卡自动记账 → 晚间账单 → 信用卡提醒</sub></td>
+<td align="center" width="50%"><img src="docs/demo-meal.zh.png" width="100%" alt="示意动画：拍一张饭照，识别食物、估算热量和蛋白/碳水/脂肪，记进今天的累计"><br><sub>🍱 拍饭照 → 热量、营养、下一顿建议</sub></td>
+<td align="center" width="50%"><img src="docs/demo-ledger.zh.png" width="100%" alt="示意动画：刷卡短信自动记账，熟店只问一句，晚间账单配图，信用卡最低消费提醒"><br><sub>💳 刷卡自动记账 → 晚间账单 → 信用卡提醒</sub></td>
 </tr>
 <tr>
-<td align="center"><img src="docs/demo-sleep.zh.gif" width="100%" alt="示意动画：到点催睡，说晚安才停，早上用手表数据对账"><br><sub>😴 催睡到说“晚安” → 早上用手表对账</sub></td>
-<td align="center"><img src="docs/demo-trend.zh.gif" width="100%" alt="示意动画：静息心率 30 天趋势图，连续异常时提前提醒可能要生病"><br><sub>📈 手表趋势图 → 生病前 1-2 天预警</sub></td>
+<td align="center"><img src="docs/demo-sleep.zh.png" width="100%" alt="示意动画：到点催睡，说晚安才停，早上用手表数据对账"><br><sub>😴 催睡到说“晚安” → 早上用手表对账</sub></td>
+<td align="center"><img src="docs/demo-trend.zh.png" width="100%" alt="示意动画：静息心率 30 天趋势图，连续异常时提前提醒可能要生病"><br><sub>📈 手表趋势图 → 生病前 1-2 天预警</sub></td>
 </tr>
 </table>
 
-<sub>以上都是示意动画，不是真实截图；饭照是作者自己的午饭，金额和卡号是虚构的。</sub>
+<sub>以上都是示意动画（APNG），不是真实截图；饭照是作者自己的午饭，金额和卡号是虚构的。</sub>
 
 </div>
 

@@ -16,12 +16,12 @@ Send it a photo of your meal and it tells you the calories and macros; every car
 
 <table>
 <tr>
-<td align="center" width="50%"><img src="docs/demo-meal.en.gif" width="100%" alt="Mock-up: send a meal photo, get foods, portion, kcal and protein/carbs/fat, logged into today's total"><br><sub>🍱 Meal photo → calories, macros, next-meal advice</sub></td>
-<td align="center" width="50%"><img src="docs/demo-ledger.en.gif" width="100%" alt="Mock-up: bank SMS auto-logged, known shop needs one word, nightly ledger with chart, credit-card minimum-spend reminder"><br><sub>💳 Card tap → auto ledger → nightly summary → card reminder</sub></td>
+<td align="center" width="50%"><img src="docs/demo-meal.en.png" width="100%" alt="Mock-up: send a meal photo, get foods, portion, kcal and protein/carbs/fat, logged into today's total"><br><sub>🍱 Meal photo → calories, macros, next-meal advice</sub></td>
+<td align="center" width="50%"><img src="docs/demo-ledger.en.png" width="100%" alt="Mock-up: bank SMS auto-logged, known shop needs one word, nightly ledger with chart, credit-card minimum-spend reminder"><br><sub>💳 Card tap → auto ledger → nightly summary → card reminder</sub></td>
 </tr>
 <tr>
-<td align="center"><img src="docs/demo-sleep.en.gif" width="100%" alt="Mock-up: bedtime nudges until you say good night, morning audit against watch data"><br><sub>😴 Nudged until "good night" → audited by your watch</sub></td>
-<td align="center"><img src="docs/demo-trend.en.gif" width="100%" alt="Mock-up: 30-day resting heart rate chart and an early 'you might be getting sick' warning"><br><sub>📈 Watch trends → warned 1–2 days before you get sick</sub></td>
+<td align="center"><img src="docs/demo-sleep.en.png" width="100%" alt="Mock-up: bedtime nudges until you say good night, morning audit against watch data"><br><sub>😴 Nudged until "good night" → audited by your watch</sub></td>
+<td align="center"><img src="docs/demo-trend.en.png" width="100%" alt="Mock-up: 30-day resting heart rate chart and an early 'you might be getting sick' warning"><br><sub>📈 Watch trends → warned 1–2 days before you get sick</sub></td>
 </tr>
 </table>
 

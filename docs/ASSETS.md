@@ -13,6 +13,8 @@ All images are mock-ups, not real screenshots; every number in them is fictional
 | `demo-ledger.*.png` | 刷卡自动记账 → 晚间账单图 → 信用卡最低消费提醒 |
 | `demo-sleep.*.png` | 催睡到说“晚安” → 早报用手表对账（含 7 晚入睡时间图） |
 | `demo-trend.*.png` | 静息心率 30 天趋势 → 生病预警 |
+| `demo-years.*.png` | 几年手表数据 → 大学四年入睡越来越晚、静息心率/HRV 同步变差（数值为虚构示意） |
+| `moments/1.png` … `9.png` | 微信朋友圈九宫格（1080×1080，仅中文）：封面 → 饭照营养 → 改一句 → 熟店记账 → 晚间账单 → 信用卡提醒 → 催睡对账 → 大学四年 → 一个本地数据库；`moments/grid-preview.png` 是 3×3 预览 |
 
 图片由 `docs/src/make_assets.py`（Python + Pillow）以 2 倍分辨率渲染后 LANCZOS 缩小；运行一次即可全部重新生成（`python3 docs/src/make_assets.py`，字体和 emoji 会自动下载到仓库外的缓存目录，真实饭照放在 `<缓存>/real/tandoori.jpg`）。字体文件**不在仓库里**：
 

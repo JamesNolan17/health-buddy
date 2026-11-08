@@ -23,6 +23,9 @@ Send it a photo of your meal and it tells you the calories and macros; every car
 <td align="center"><img src="docs/demo-sleep.en.png" width="100%" alt="Mock-up: bedtime nudges until you say good night, morning audit against watch data"><br><sub>😴 Nudged until "good night" → audited by your watch</sub></td>
 <td align="center"><img src="docs/demo-trend.en.png" width="100%" alt="Mock-up: 30-day resting heart rate chart and an early 'you might be getting sick' warning"><br><sub>📈 Watch trends → warned 1–2 days before you get sick</sub></td>
 </tr>
+<tr>
+<td align="center" colspan="2"><img src="docs/demo-years.en.png" width="50%" alt="Mock-up: years of Apple Watch data charted by academic year — sleep onset drifting later, resting HR up, HRV down"><br><sub>🎓 Years of watch data → how university bedtimes drifted, in one chart</sub></td>
+</tr>
 </table>
 
 <sub>All mock-up animations, not real screenshots; the meal photos are the author's own lunches, amounts and card numbers are fictional.</sub>

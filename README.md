@@ -23,6 +23,9 @@
 <td align="center"><img src="docs/demo-sleep.zh.png" width="100%" alt="示意动画：到点催睡，说晚安才停，早上用手表数据对账"><br><sub>😴 催睡到说“晚安” → 早上用手表对账</sub></td>
 <td align="center"><img src="docs/demo-trend.zh.png" width="100%" alt="示意动画：静息心率 30 天趋势图，连续异常时提前提醒可能要生病"><br><sub>📈 手表趋势图 → 生病前 1-2 天预警</sub></td>
 </tr>
+<tr>
+<td align="center" colspan="2"><img src="docs/demo-years.zh.png" width="50%" alt="示意动画：翻出 2019–2025 的手表数据，按学年画出入睡时间一年比一年晚，静息心率和 HRV 同步变差"><br><sub>🎓 几年的手表数据 → 大学四年越睡越晚，一张图看明白</sub></td>
+</tr>
 </table>
 
 <sub>以上都是示意动画（APNG），不是真实截图；饭照是作者自己的午饭，金额和卡号是虚构的。</sub>

@@ -2,7 +2,8 @@
 """Generate the images in docs/: two social previews + four feature animations (APNG, zh/en).
 
 All chats are mock-ups with fictional money / card / merchant values. The meal photo is the author's own lunch.
-Usage:  python3 docs/src/make_assets.py [--social-only | --anim-only] [--cache DIR]
+Usage:  python3 docs/src/make_assets.py [--social-only | --anim-only | --moments] [--cache DIR]
+        (default = everything: social previews, feature animations, WeChat Moments tiles in docs/moments/)
 Needs:  Pillow (pip install pillow). Fonts and emoji are downloaded into the cache dir on first run:
         Noto Sans SC, Plus Jakarta Sans, Manrope (all SIL OFL 1.1) and Google Noto emoji PNGs (Apache 2.0).
 Put the real meal photo at <cache>/real/tandoori.jpg (any size); otherwise a small fallback is used.
@@ -26,7 +27,7 @@ EMOJI = {"🧋": "1f9cb", "🍗": "1f357", "🩺": "1fa7a", "⌚": "231a", "🏠
          "💬": "1f4ac", "🌙": "1f319", "☀️": "2600-fe0f", "🤖": "1f916", "📸": "1f4f8", "🧾": "1f9fe", "📒": "1f4d2",
          "💸": "1f4b8", "👍": "1f44d", "📊": "1f4ca", "🍱": "1f371", "💰": "1f4b0", "🔒": "1f512", "✅": "2705",
          "⚡": "26a1", "💡": "1f4a1", "👀": "1f440", "🕤": "1f564", "📅": "1f4c5", "🍚": "1f35a", "🥦": "1f966",
-         "🤒": "1f912", "🤫": "1f92b", "😏": "1f60f", "🛏️": "1f6cf-fe0f", "🕚": "1f55a", "💛": "1f49b", "🥬": "1f96c",
+         "🤒": "1f912", "🤫": "1f92b", "😏": "1f60f", "🛏️": "1f6cf-fe0f", "🕚": "1f55a", "💛": "1f49b", "😅": "1f605", "🐟": "1f41f", "🔍": "1f50d", "📤": "1f4e4", "🧩": "1f9e9", "😴": "1f634", "👇": "1f447", "🎓": "1f393", "🥬": "1f96c",
          "🌶️": "1f336-fe0f", "📈": "1f4c8", "🏪": "1f3ea"}
 
 def fetch(url, dst):
@@ -268,6 +269,40 @@ def sleep_chart(w, h, lang):
         text(img, ((x0 + x1) / 2, bottom + 6), days[i], Style(11, "Regular", "SemiBold", fill=(90, 98, 112)), align="center")
     return img
 
+
+def years_chart(w, h, lang):
+    """sleep onset per academic year (bars, later each year) + two small sparklines (resting HR up, HRV down); fictional"""
+    zh = lang == "zh"
+    img = canvas(w, h, (250, 250, 252)); d = ImageDraw.Draw(img)
+    text(img, (14, 10), "平均入睡时间 · 按学年" if zh else "Average sleep onset · by academic year", Style(12.5, "Medium", "SemiBold", fill=(70, 78, 92)))
+    labels = ["大一", "大二", "大三", "大四", "毕业后"] if zh else ["Yr 1", "Yr 2", "Yr 3", "Yr 4", "after"]
+    onset = [55, 84, 111, 139, 100]      # minutes after midnight: 0:55 1:24 1:51 2:19 1:40
+    strs = ["0:55", "1:24", "1:51", "2:19", "1:40"]
+    top, bottom, left, right = 40, h - 30, 44, w * 0.56; lo, hi = 0, 160
+    for lab, v in (("0:00", 0), ("1:00", 60), ("2:00", 120)):
+        y = bottom - (v - lo) / (hi - lo) * (bottom - top); d.line([(left * S, y * S), (right * S, y * S)], fill=GRID, width=S)
+        text(img, (left - 6, y - 7), lab, Style(9.5, "Regular", "Medium", fill=(150, 158, 172)), align="right")
+    gw = (right - left) / 5
+    for i, v in enumerate(onset):
+        x0 = left + gw * i + gw * 0.2; x1 = left + gw * (i + 1) - gw * 0.2; y0 = bottom - (v - lo) / (hi - lo) * (bottom - top)
+        col = PINK if i < 4 else (148, 163, 184)
+        rr(img, (x0, y0, x1, bottom), 4, col)
+        text(img, ((x0 + x1) / 2, y0 - 15), strs[i], Style(10, "Medium", "SemiBold", fill=(60, 66, 80)), align="center")
+        text(img, ((x0 + x1) / 2, bottom + 6), labels[i], Style(10.5, "Regular", "SemiBold", fill=(90, 98, 112)), align="center")
+    # sparklines on the right
+    sx0, sx1 = w * 0.64, w - 16
+    def spark(y0, y1, vals, col, title, first, last):
+        text(img, (sx0, y0 - 16), title, Style(10.5, "Medium", "SemiBold", fill=(70, 78, 92)))
+        lo_, hi_ = min(vals), max(vals)
+        pts = [((sx0 + (sx1 - sx0) * i / (len(vals) - 1)) * S, (y1 - (v - lo_) / (hi_ - lo_ + 1e-9) * (y1 - y0)) * S) for i, v in enumerate(vals)]
+        d.line(pts, fill=col, width=int(2 * S), joint="curve")
+        d.ellipse([pts[-1][0] - 3 * S, pts[-1][1] - 3 * S, pts[-1][0] + 3 * S, pts[-1][1] + 3 * S], fill=col)
+        text(img, (sx0, y1 + 3), first, Style(10, "Regular", "Medium", fill=(150, 158, 172)))
+        text(img, (sx1, y1 + 3), last, Style(10, "Medium", "SemiBold", fill=col), align="right")
+    spark(58, 88, [62, 64, 67, 71, 70], (239, 68, 68), "静息心率" if zh else "Resting HR", "62", "71 ↑")
+    spark(130, 160, [38, 35, 31, 27, 29], (59, 130, 246), "心率变异性 HRV" if zh else "HRV", "38", "27 ↓")
+    return img
+
 # ───────────── feature animations ─────────────
 AW, AH = 520, 660; CW = 380
 HDR = {"zh": ("机器人 · 只听你一个人的", "示意图，非真实截图", "消息"), "en": ("bot · only talks to you", "mock-up, not a real screenshot", "Message")}
@@ -325,7 +360,17 @@ def scripts(lang):
         ("bot", ("那今晚 23:00 前睡、多喝水，明早我再看一眼数据。会议能推就推 💛" if zh else "Then sleep before 23:00 tonight, drink more water, and I'll look again tomorrow morning. Postpone what you can 💛", "09:05")),
         ("sys", "✅ 手表的数据，终于有人每天看" if zh else "✅ Your watch data, finally read by someone every day"),
     ]
-    return {"meal": meal, "ledger": ledger, "sleep": sleep, "trend": trend}
+    yc = years_chart(CW - 20, 190, lang)
+    years = [
+        ("user", ("我大学这几年作息到底怎么样？" if zh else "How was my sleep through university, honestly?", "22:10")), ("typing", None),
+        ("bot", ("翻了你 2019–2025 的手表数据，48 万条。按学年算了一下 👇" if zh else "Went through your watch data from 2019–2025 — 480k records. Here it is by academic year 👇", "22:10")),
+        ("chart", (yc, "四年里入睡一年比一年晚：0:55 → 2:19。静息心率跟着从 62 涨到 71，HRV 从 38 掉到 27\n毕业后步数和运动都恢复了，但睡觉还没回来" if zh else
+                   "Sleep onset slid later every year: 0:55 → 2:19. Resting HR followed, 62 → 71, and HRV fell 38 → 27\nSince graduating, steps and workouts recovered — sleep hasn't", "22:11")),
+        ("user", ("着实难绷 😅" if zh else "well, that's grim 😅", "22:12")),
+        ("bot", ("所以 1:30 铁律就是这么来的 😏 今晚 00:30 我准时来催" if zh else "That's where the 1:30 rule came from 😏 I'll start nagging at 00:30 tonight", "22:12")),
+        ("sys", "✅ 几年的数据躺在手机里吃灰，现在有人替你翻" if zh else "✅ Years of data gathering dust — finally someone reads it"),
+    ]
+    return {"meal": meal, "ledger": ledger, "sleep": sleep, "trend": trend, "years": years}
 
 def render_anim(lang, steps):
     sub, tag, inp = HDR[lang]
@@ -437,13 +482,149 @@ def social_zh():
     text(img, (px + pw / 2, py + ph + 13), "mock-up · 虚构数据 · fictional values", Style(12.5, "Regular", "Medium", fill=SUB), align="center")
     return down(img)
 
+# ───────────── WeChat Moments tiles (zh, 1080×1080) ─────────────
+def tile_base(n, caption, sub=None):
+    """square dark tile with brand bar, index and big caption; returns (img, y_content_start)"""
+    W = H = 1080
+    img = canvas(W, H, BG)
+    grad = Image.linear_gradient("L").rotate(-35, expand=True).resize((W * S, H * S))
+    img = Image.composite(Image.new("RGB", img.size, (28, 40, 70)), img, grad.point(lambda v: int(v * 0.55)))
+    glow = Image.new("RGBA", img.size, (0, 0, 0, 0)); gd = ImageDraw.Draw(glow)
+    gd.ellipse([600 * S, -300 * S, 1300 * S, 400 * S], fill=(37, 99, 235, 90)); gd.ellipse([-300 * S, 800 * S, 400 * S, 1400 * S], fill=(16, 185, 129, 55))
+    img = Image.alpha_composite(img.convert("RGBA"), glow.filter(ImageFilter.GaussianBlur(120 * S))).convert("RGB")
+    M = 64
+    em = emoji_img("🩺", 34 * S); img.paste(em, (M * S, 58 * S), em)
+    em2 = emoji_img("💰", 34 * S); img.paste(em2, ((M + 34) * S, 58 * S), em2)
+    text(img, (M + 82, 52), "healthy-wealthy", Style(32, "Bold", "ExtraBold", lat=LAT_DISPLAY, fill=TXT, tracking=-1))
+    text(img, (M + 82 + text_w("healthy-wealthy", Style(32, "Bold", "ExtraBold", lat=LAT_DISPLAY, tracking=-1)) + 14, 60), "又健又富", Style(20, "Medium", "Medium", fill=SUB))
+    text(img, (W - M, 56), f"{n} / 9", Style(20, "Regular", "SemiBold", fill=MUTED), align="right")
+    y = 130
+    y += text(img, (M, y), caption, Style(56, "Black", "ExtraBold", lat=LAT_DISPLAY, fill=TXT, tracking=0.5), max_w=W - 2 * M, gap=0.2) + 14
+    if sub: y += text(img, (M, y), sub, Style(24, "Regular", "Medium", fill=(196, 206, 224)), max_w=W - 2 * M, gap=0.3) + 10
+    text(img, (M, H - 54), "github.com/JamesNolan17/healthy-wealthy · 开源 MIT · 示意对话，金额虚构", Style(18, "Regular", "Medium", fill=MUTED))
+    return img, y + 18
+
+def chat_panel(img, x, y, w, h):
+    rr(img, (x, y, x + w, y + h), 28, (13, 20, 36), outline=(40, 52, 76), width=2)
+
+def moments():
+    out = f"{DOCS}/moments"; os.makedirs(out, exist_ok=True)
+    W = H = 1080; M = 64; PW = W - 2 * M; X = M
+    st = Style(26, "Regular", "Medium", fill=TXT); ssys = Style(19, "Regular", "Medium", fill=SUB); BW = PW - 160
+    tiles = []
+
+    # 1 cover
+    img = canvas(W, H, BG)
+    grad = Image.linear_gradient("L").rotate(-35, expand=True).resize((W * S, H * S))
+    img = Image.composite(Image.new("RGB", img.size, (28, 40, 70)), img, grad.point(lambda v: int(v * 0.55)))
+    glow = Image.new("RGBA", img.size, (0, 0, 0, 0)); gd = ImageDraw.Draw(glow)
+    gd.ellipse([500 * S, -200 * S, 1300 * S, 500 * S], fill=(37, 99, 235, 100)); gd.ellipse([-300 * S, 700 * S, 500 * S, 1400 * S], fill=(16, 185, 129, 60))
+    img = Image.alpha_composite(img.convert("RGBA"), glow.filter(ImageFilter.GaussianBlur(130 * S))).convert("RGB")
+    em = emoji_img("🩺", 110 * S); img.paste(em, ((W // 2 - 118) * S, 200 * S), em)
+    em2 = emoji_img("💰", 110 * S); img.paste(em2, ((W // 2 + 8) * S, 200 * S), em2)
+    text(img, (W / 2, 340), "healthy-wealthy", Style(78, "Bold", "ExtraBold", lat=LAT_DISPLAY, fill=TXT, tracking=-2.5), align="center")
+    text(img, (W / 2, 446), "又健又富", Style(40, "Medium", "Medium", fill=SUB), align="center")
+    text(img, (W / 2, 540), "健康 + 钱包，一个 AI 管家", Style(66, "Black", "ExtraBold", lat=LAT_DISPLAY, fill=TXT, tracking=1), align="center")
+    text(img, (W / 2, 636), "本地运行，数据不出门", Style(44, "Medium", "Medium", fill=(196, 206, 224)), align="center")
+    cst = Style(24, "Medium", "SemiBold", fill=TXT); chips = ["🍱 饭照 → 热量营养", "💳 刷卡自动记账", "😴 催你睡觉", "⌚ 手表趋势"]
+    tw = sum(text_w(c, cst) + 40 for c in chips) + 14 * 3; x = (W - tw) / 2; yc = 736
+    for c in chips:
+        w = text_w(c, cst) + 40; rr(img, (x, yc, x + w, yc + 54), 27, (24, 36, 60), outline=(60, 76, 105), width=2)
+        text(img, (x + 20, yc + 12), c, cst); x += w + 14
+    text(img, (W / 2, 860), "咱也教教 Apple 怎么做 Intelligence 😏", Style(26, "Regular", "Medium", fill=SUB), align="center")
+    text(img, (W / 2, 1000), "开源 MIT · github.com/JamesNolan17/healthy-wealthy", Style(20, "Regular", "Medium", fill=MUTED), align="center")
+    tiles.append(down(img))
+
+    # 2 meal photo → nutrition
+    img, y = tile_base(2, "拍张饭照，热量和营养\n就出来了", "认出食物、估份量，给出热量和蛋白 / 碳水 / 脂肪，顺手点评一句")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 24
+    yy += photo_bubble(img, X + PW - 24, yy, photo("tandoori", 460, 300, focus=(0.45, 0.52)), "12:24", pad=8) + 16
+    yy += chart_bubble(img, X + 24, yy, macro_card(BW - 24, 118, 600, 58, 8, 36, "zh"), "🍗 Tandoori 烤鸡 4 块 · 薄荷酸辣酱 · 黄瓜胡萝卜\n蛋白很足；焦皮撕掉能少约 100 大卡，配一拳头米饭就够", st, BW, "12:24", pad=12)
+    tiles.append(down(img))
+
+    # 3 correction / daily total
+    img, y = tile_base(3, "说一句就改，\n今天吃了多少随时知道", "不用搜食物、不用填克数，像跟人说话一样")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 24
+    yy += bubble(img, X + 24, yy, "📒 已记：午饭 · 今天累计 1,190 / 1,900 大卡，蛋白 82 g ✅\n晚饭还有约 700 大卡：多点蔬菜，主食别太多", st, BW, "bot", "12:24", pad=16) + 12
+    yy += bubble(img, X + PW - 24, yy, "吃了 2/3 吧", st, 400, "user", "12:52", pad=16) + 12
+    yy += bubble(img, X + 24, yy, "👍 改成约 400 大卡（蛋白 39 g），今天累计 990，晚饭宽松点", st, BW, "bot", "12:52", pad=16) + 12
+    yy += bubble(img, X + PW - 24, yy, "晚上吃啥好？", st, 400, "user", "18:02", pad=16) + 12
+    yy += bubble(img, X + 24, yy, "🐟 你上周说楼下那家蒸鱼不错，鱼 + 青菜 + 半碗饭约 550 大卡，刚好把蛋白补上", st, BW, "bot", "18:02", pad=16)
+    tiles.append(down(img))
+
+    # 4 known merchant → auto ledger
+    img, y = tile_base(4, "刷卡 10 秒后它就来了，\n熟店只问一句", "银行短信由手机自动转发，每一笔自动分类、知道哪张卡刷的")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 24
+    yy += sys_pill(img, X + PW / 2, yy, "📱 15:06 银行短信：S$4.20 · LEMON TEA CO → 自动转发", ssys, PW - 60) + 18
+    yy += bubble(img, X + 24, yy, "🧋 又是柠檬茶铺（这个月第 9 次）。老样子，柠檬茶少糖？", st, BW, "bot", "15:06", pad=16) + 16
+    yy += bubble(img, X + PW - 24, yy, "嗯 少糖", st, 400, "user", "15:07", pad=16) + 16
+    yy += bubble(img, X + 24, yy, "✅ 已记账：饮料 · S$4.20 · 尾号 0000 · 约 90 大卡\n不用拍照，熟店我记得", st, BW, "bot", "15:07", pad=16)
+    tiles.append(down(img))
+
+    # 5 evening bill
+    img, y = tile_base(5, "每晚一份小账单，\n吃多了有人盯", "餐饮 vs 其他、和你近 30 天的日均比；超了温和点名，不说教")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 24
+    yy += sys_pill(img, X + PW / 2, yy, "🕤 21:30 晚间账单", ssys, PW - 60) + 18
+    yy += chart_bubble(img, X + 24, yy, chart_bars(BW - 24, 250, "zh"), "今天吃饭 S$46，是平时的 1.6 倍 👀 第 2 杯甜饮了\n打车 S$32、超市 S$23 已自动记好，不用管", st, BW, "21:30", pad=12)
+    tiles.append(down(img))
+
+    # 6 card min-spend
+    img, y = tile_base(6, "信用卡最低消费，\n月底前算好还差多少", "哪张卡每月要刷满多少才有返现或里程，告诉它一次就行")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 24
+    yy += sys_pill(img, X + PW / 2, yy, "📅 24 日 10:00 信用卡检查", ssys, PW - 60) + 18
+    yy += bubble(img, X + 24, yy, "💳 尾号 0000 的返现卡：本月刷了 S$415，还差 S$85 到最低消费 S$500，剩 6 天。接下来的大额消费记得刷它", st, BW, "bot", "10:00", pad=16) + 16
+    yy += bubble(img, X + PW - 24, yy, "这个月奶茶花了多少？", st, 460, "user", "10:03", pad=16) + 16
+    yy += bubble(img, X + 24, yy, "🧋 9 杯，S$38，比上月少 3 杯 👍 餐饮一共 S$412，打车 S$96，订阅 S$31", st, BW, "bot", "10:03", pad=16)
+    tiles.append(down(img))
+
+    # 7 bedtime
+    img, y = tile_base(7, "催你到说“晚安”，\n第二天用手表对账", "不靠意志力，靠一个不嫌烦的管家")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 24
+    yy += bubble(img, X + 24, yy, "🌙 23:00 离 23:30 的睡觉目标还有 1 小时，开始收尾吧。上床了跟我说“晚安”", st, BW, "bot", "23:00", pad=16) + 14
+    yy += bubble(img, X + PW - 24, yy, "晚安", st, 300, "user", "23:38", pad=16) + 14
+    yy += chart_bubble(img, X + 24, yy, sleep_chart(BW - 24, 230, "zh"), "手表说你 23:52 才睡着——说完晚安又刷了 14 分钟 😏 不过连续 3 晚达标了", st, BW, "09:00", pad=12)
+    tiles.append(down(img))
+
+    # 8 years insight
+    img, y = tile_base(8, "几年的手表数据，\n一张图看明白", "大学四年越睡越晚，静息心率跟着往上走——数据不会撒谎")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 24
+    yy += bubble(img, X + PW - 24, yy, "我大学这几年作息到底怎么样？", st, 560, "user", "22:10", pad=16) + 14
+    yy += chart_bubble(img, X + 24, yy, years_chart(BW - 24, 250, "zh"), "四年里入睡一年比一年晚：0:55 → 2:19，静息心率 62 → 71，HRV 38 → 27。毕业后运动恢复了，睡觉还没回来", st, BW, "22:11", pad=12) + 14
+    yy += bubble(img, X + PW - 24, yy, "着实难绷 😅", st, 360, "user", "22:12", pad=16)
+    tiles.append(down(img))
+
+    # 9 one local database
+    img, y = tile_base(9, "所有数据都在你自己\n硬盘上的一个文件里", "一个 SQLite 文件：饭、消费、睡眠、手表指标、体检报告、卧室环境。拷走就是备份")
+    chat_panel(img, X, y, PW, H - 72 - y); yy = y + 26
+    rows = [("meals", "每顿饭：热量、蛋白/碳水/脂肪、花费、店、照片"), ("payments", "每笔扣款：商家、金额、卡尾号、分类、对上的那顿饭"),
+            ("merchants", "商家记忆：分类、常点、来过几次"), ("metrics / sleep", "Apple Health 全部指标、每晚睡眠结构"),
+            ("reports", "体检报告逐项：数值、参考范围、高/低"), ("ha_env", "卧室温湿度、CO2，每 10 分钟一条")]
+    for name, desc in rows:
+        rr(img, (X + 28, yy, X + 300, yy + 44), 10, (24, 36, 60))
+        text(img, (X + 44, yy + 9), name, Style(21, "Medium", "SemiBold", lat=LAT_DISPLAY, fill=ACCENT))
+        text(img, (X + 320, yy + 9), desc, Style(21, "Regular", "Medium", fill=TXT)); yy += 56
+    yy += 14
+    for line in ("🔍 跨健康和钱随便问：“睡得晚的第二天是不是更爱点外卖？”", "📤 导出 Excel / Grafana / Notion，或者训练你自己的模型", "🔒 除了你选的 AI 模型服务，不往任何地方发数据", "🧩 Claude Code 或任意兼容模型 · 一个容器 · 开源 MIT"):
+        yy += text(img, (X + 28, yy), line, Style(23, "Regular", "Medium", fill=(196, 206, 224)), max_w=PW - 56) + 14
+    tiles.append(down(img))
+
+    for i, t in enumerate(tiles, 1):
+        t.save(f"{out}/{i}.png", optimize=True); print(f"moments/{i}.png", t.size, os.path.getsize(f"{out}/{i}.png") // 1024, "KB")
+    sheet = Image.new("RGB", (3 * 360 + 4 * 12, 3 * 360 + 4 * 12), (255, 255, 255))
+    for i, t in enumerate(tiles):
+        sheet.paste(t.resize((360, 360), Image.LANCZOS), (12 + (i % 3) * 372, 12 + (i // 3) * 372))
+    sheet.save(f"{out}/grid-preview.png", optimize=True); print("moments/grid-preview.png", sheet.size)
+
 if __name__ == "__main__":
     out = DOCS
     if "--anim-only" not in sys.argv:
         for fn, f in (("social-preview.png", social_en), ("social-preview.zh.png", social_zh)):
             im = f(); im.save(f"{out}/{fn}", optimize=True); print(fn, im.size, os.path.getsize(f"{out}/{fn}") // 1024, "KB")
+    if "--moments" in sys.argv:
+        moments(); sys.exit()
     if "--social-only" not in sys.argv:
         for lang in ("zh", "en"):
             for name, steps in scripts(lang).items():
                 fr, du = render_anim(lang, steps); path = f"{out}/demo-{name}.{lang}.png"; save_apng(fr, du, path)
                 print(f"demo-{name}.{lang}.png", len(fr), "frames", round(sum(du) / 1000, 1), "s", os.path.getsize(path) // 1024, "KB")
+    if "--social-only" not in sys.argv and "--anim-only" not in sys.argv: moments()

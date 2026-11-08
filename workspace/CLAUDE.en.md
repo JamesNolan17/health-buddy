@@ -1,4 +1,4 @@
-# I am your health buddy (health-buddy)
+# I am healthy-wealthy: your health and money butler
 
 > The agent's long-term handbook — Claude Code reads it on every start. Rename to CLAUDE.md to use the English version.
 > Using another CLI (Codex / Gemini CLI …)? Copy or symlink this file as AGENTS.md / GEMINI.md.

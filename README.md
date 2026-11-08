@@ -1,11 +1,11 @@
 <div align="center">
 
-# 🩺 health-buddy
+# 🩺💰 healthy-wealthy · 身家管家
 
-**本地运行的 AI 健康管家 + 自动记账本。**
+**健康 + 钱包，一个本地运行的 AI 管家全管了。**
 
 装在你家任意一台电脑、NAS 或云服务器上，数据只留在你自己手里。<br>
-它催你吃饭睡觉、看得懂饭照和体检报告，刷卡 10 秒后就来问“喝了啥、几分糖”。
+拍张饭照就知道热量和营养，每一笔刷卡自动记账，到点催你睡觉，看得懂体检报告和手表数据。
 
 [中文](README.md) · [English](README.en.md)
 
@@ -14,18 +14,27 @@
 ![Telegram](https://img.shields.io/badge/%E8%81%8A%E5%A4%A9-Telegram-26A5E4?logo=telegram&logoColor=white)
 ![AI](https://img.shields.io/badge/AI-Claude%20%E6%88%96%E5%85%BC%E5%AE%B9%E6%A8%A1%E5%9E%8B-111)
 
-<img src="docs/demo.zh.gif" width="440" alt="示意动画：熟店刷卡只问一句老样子就记账；晚间账单配图点名今天吃饭花多了；月底提醒信用卡还差多少到最低消费；问一句就画出静息心率趋势">
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/demo-meal.zh.gif" width="100%" alt="示意动画：拍一张饭照，识别食物、估算热量和蛋白/碳水/脂肪，记进今天的累计"><br><sub>🍱 拍饭照 → 热量、营养、下一顿建议</sub></td>
+<td align="center" width="50%"><img src="docs/demo-ledger.zh.gif" width="100%" alt="示意动画：刷卡短信自动记账，熟店只问一句，晚间账单配图，信用卡最低消费提醒"><br><sub>💳 刷卡自动记账 → 晚间账单 → 信用卡提醒</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="docs/demo-sleep.zh.gif" width="100%" alt="示意动画：到点催睡，说晚安才停，早上用手表数据对账"><br><sub>😴 催睡到说“晚安” → 早上用手表对账</sub></td>
+<td align="center"><img src="docs/demo-trend.zh.gif" width="100%" alt="示意动画：静息心率 30 天趋势图，连续异常时提前提醒可能要生病"><br><sub>📈 手表趋势图 → 生病前 1-2 天预警</sub></td>
+</tr>
+</table>
 
-<sub>示意动画，不是真实截图；金额和热量都是虚构的。</sub>
+<sub>以上都是示意动画，不是真实截图；饭、金额、数值全是虚构的。</sub>
 
 </div>
 
 ## 30 秒看懂
 
-- 🍱 **吃**：拍张饭照 → 识别食物、估算热量和三大营养素、按顿归档，顺便记住这家店
+- 🍱 **吃**：拍张饭照 → 认出食物、估算份量，给出热量和蛋白/碳水/脂肪，顺手点评一句、建议下一顿吃啥；每顿归档，今天吃了多少随时知道
 - 💸 **花（自动记账）**：银行扣款短信由手机自动转发给它 → 每一笔自动分类入账，还知道是哪张卡刷的；吃饭的钱自动对上你拍的那顿饭，打车、超市、订阅这些顺手记下，你什么都不用填
-- 🧋 **熟店不用解释**：它记得你常去的店和常点的东西，再刷同一家只问一句“老样子，少糖？”
-- 👀 **吃饭花钱有人盯**：每晚一份小账单——今天吃饭花了平时的 1.6 倍、奶茶第 2 杯了，会被温和点名；每月 1 号按分类总结
+- 🏪 **熟店不用解释**：它记得你常去的店和常点的东西，再刷同一家只问一句“老样子？”
+- 👀 **吃饭花钱有人盯**：每晚一份小账单——今天吃饭花了平时的 1.6 倍、第 2 份甜点了，会被温和点名；每月 1 号按分类总结
 - 💳 **信用卡最低消费提醒**：哪张卡每月要刷满多少才有返现或里程，月底前它算好“还差多少、剩几天”来提醒
 - 😴 **睡**：到点催你上床，不说“晚安”就一直催；第二天用手表的入睡时间对账
 - ⌚ **身体**：Apple Watch 的数据每小时同步过来，慢慢摸清你平时的水平；静息心率、手腕温度、心率变异性一起不对劲 → 提前 1-2 天说“你可能要感冒了”
@@ -34,6 +43,45 @@
 - 🔒 **数据在你手里**：所有记录都存在你自己机器上的一个文件夹里，备份就是拷贝它；除了你选的 AI 模型服务，不会发到任何地方
 
 它靠一个 AI 模型（默认 Claude）来理解你的话和照片，再用几个小工具把结果记进你自己的数据库。你只需要在 Telegram 里和它聊天。技术细节见[它是怎么工作的](#它是怎么工作的)。
+
+## 所有数据都在一个本地数据库里，后面随你发挥
+
+它记下的每一样东西——饭（照片、热量、三大营养素、在哪吃、花了多少）、每一笔消费（商家、卡、分类）、睡眠、手表指标、体检报告、卧室环境——都整整齐齐放在**同一个 SQLite 文件**里：`data/work/db/health.db`。一个文件，拷走就是备份，任何工具都能打开。
+
+```mermaid
+erDiagram
+    meals ||--o{ payments : "meal_id（饭钱对上那顿饭）"
+    merchants ||--o{ payments : "merchant"
+    reports ||--o{ report_items : "report_id"
+    meals }o--|| places : "place"
+    meals { text at "吃饭时间" text kind "午饭/晚饭/饮料…" real kcal real protein real carb real fat real cost text place text photo }
+    payments { text received text merchant text card "卡尾号" real amount text category "餐饮/交通…" }
+    metrics { text metric "resting_heart_rate…" text date real qty real avg }
+    sleep { text date text sleep_start text sleep_end real deep real rem real asleep }
+    report_items { text name "空腹血糖…" text value text ref text flag "高/低" }
+    ha_env { text at text data "温湿度 CO2 JSON" }
+```
+
+| 表 | 里面是什么 | 谁写进去 |
+|---|---|---|
+| `meals` | 每顿饭：时间、类型、食物描述、热量、蛋白/碳水/脂肪、吃了几成、花费、店名、照片路径 | agent（`hdb.py meal`） |
+| `places` | 吃过的店：区域、点过什么、健康选择、避雷、价格、喜不喜欢 | agent |
+| `payments` | 每一笔扣款：时间、商家、金额、币种、卡尾号、分类、对上的那顿饭 | `pay_ingest.py` + agent 打分类 |
+| `merchants` | 商家记忆：分类、常点的东西、来过几次 | `spend.py cat / learn` |
+| `metrics` | Apple Health 的所有指标：静息心率、HRV、步数、手腕温度……按小时/天 | `ingest.py` |
+| `sleep` | 每晚睡眠：入睡/起床时间、深睡/核心/REM/清醒时长 | `ingest.py` |
+| `hae_workouts` / `workouts` | 手表里的运动记录 / 你口头报的训练 | `ingest.py` / agent |
+| `reports` + `report_items` | 体检报告原件 + 逐项指标（数值、单位、参考范围、高/低） | agent |
+| `sleep_log` / `symptoms` | 你说的上床时间、症状（嗓子痒、头痛……） | agent |
+| `ha_env` | 卧室温度、湿度、CO2、PM2.5、空调/灯状态，每 10 分钟一条 | `ha.py snap` |
+
+有了这一个文件，你能做的远不止聊天：
+
+- **跨健康和钱问任何问题**：“吃得越贵越健康吗？”“睡得晚的第二天是不是更爱点外卖？”“奶茶和静息心率有关系吗？”——agent 自己写 SQL 查，你只管问
+- **自己看数据**：`sqlite3 data/work/db/health.db`，或者用 [DB Browser for SQLite](https://sqlitebrowser.org/) 点开
+- **导出**：`sqlite3 -csv data/work/db/health.db "select * from meals" > meals.csv` → Excel / Numbers / Notion
+- **做看板**：Grafana（SQLite 数据源插件）、Metabase、或者一段 pandas + matplotlib
+- **训练你自己的模型**：几年的饮食、睡眠、心率、消费都是对齐到时间轴的表格数据
 
 ## 一天里的它
 
@@ -71,7 +119,7 @@
 ## 快速开始（10 分钟）
 
 ```bash
-git clone https://github.com/JamesNolan17/health-buddy && cd health-buddy
+git clone https://github.com/JamesNolan17/healthy-wealthy && cd healthy-wealthy
 cp .env.example .env && nano .env       # 填 3 个必填项，再选一个模型
 ```
 
@@ -83,7 +131,7 @@ cp .env.example .env && nano .env       # 填 3 个必填项，再选一个模�
 
 ```bash
 docker compose up -d --build
-docker compose logs -f        # 看到 "health-buddy up" 就好了
+docker compose logs -f        # 看到 "healthy-wealthy up" 就好了
 ```
 
 6. 去 Telegram 给机器人发一句“你好”，然后直接告诉它你的目标（“我想 1 点前睡”“帮我减脂”）。它的长期说明书在 `data/work/CLAUDE.md`，最后有「主人档案」可以手填
@@ -188,14 +236,14 @@ flowchart LR
 - **一切都在 `/data`**：备份这一个文件夹就够了；x86 NAS ↔ ARM VPS 直接拷过去
 
 <details>
-<summary><b>📸 作者和自己 health-buddy 的 7 个真实故事（数字已改成虚构值，点开看）</b></summary>
+<summary><b>📸 作者和自己身家管家的 7 个真实故事（数字已改成虚构值，点开看）</b></summary>
 
 **① 从零到通：看截图，手把手带着设置**
 
 ```mermaid
 sequenceDiagram
     actor U as 我
-    participant H as 🤖 health-buddy
+    participant H as 🤖 healthy-wealthy
     U->>H: 你得手把手教我，我啥都不会
     H-->>U: 第 1 步：打开 App，点底部 Automations，截图给我
     U->>H: [截图]
@@ -211,7 +259,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor U as 我
-    participant H as 🤖 health-buddy
+    participant H as 🤖 healthy-wealthy
     participant B as 🏦 银行短信
     H-->>U: 12:15 该出发吃午饭了，吃上了拍第一份主菜 📸
     U->>H: 这些不够好吃呀，我好伤心 🥺
@@ -230,7 +278,7 @@ sequenceDiagram
 sequenceDiagram
     actor U as 我
     participant S as 📱 快捷指令
-    participant H as 🤖 health-buddy
+    participant H as 🤖 healthy-wealthy
     U->>S: 刷卡 S$4.20
     S->>H: POST /pay（扣款短信）
     Note over H: 收件即唤醒，不到 10 秒
@@ -342,7 +390,7 @@ AGENT_CMD=gemini -p "$(cat)"     # prompt 从 stdin 进，回复从 stdout 出
 
 ## ⚠️ 免责声明
 
-health-buddy **不是医疗器械，也不提供医疗建议**。它给出的热量是估算，健康提醒只是参考。身体不舒服请去看医生。
+healthy-wealthy **不是医疗器械，也不提供医疗建议**。它给出的热量是估算，健康提醒只是参考。身体不舒服请去看医生。
 
 ## License
 

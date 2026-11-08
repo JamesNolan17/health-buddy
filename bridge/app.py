@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-health-buddy bridge  —  一个文件把「AI 助手」接到现实世界 / one file that wires an AI agent to the real world.
+healthy-wealthy bridge  —  一个文件把「AI 助手」接到现实世界 / one file that wires an AI agent to the real world.
 
   • Telegram 机器人：只听主人一个人的话，文字/照片/文件转给 agent，agent 的回复发回 Telegram
   • 收件口：HTTP POST /<source> → /data/inbox/<source>/*.json（Health Auto Export、快捷指令、HA 都往这里推）
@@ -230,7 +230,7 @@ if __name__ == "__main__":
         log(f"inbox listening on :{PORT}")
     else:
         log("INBOX_TOKEN 未设置：收件口不启动 / inbox disabled")
-    log(f"health-buddy up · agent={AGENT} · data={DATA}")
+    log(f"healthy-wealthy up · agent={AGENT} · data={DATA}")
     if not TG_TOKEN and sys.stdin.isatty():                      # 控制台模式：直接打字和 agent 聊
         for line in sys.stdin: enqueue(line.strip())
     while True: time.sleep(3600)

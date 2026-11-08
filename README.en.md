@@ -1,11 +1,11 @@
 <div align="center">
 
-# 🩺 health-buddy
+# 🩺💰 healthy-wealthy
 
-**A private AI health butler + an expense ledger that writes itself.**
+**One private AI butler for your health *and* your wallet.**
 
 Runs on your own computer, NAS or cloud box — your data never leaves home.<br>
-It nags you to eat and sleep on time, reads meal photos and lab reports, and asks "what did you get, sugar level?" ten seconds after you tap your card.
+Send it a photo of your meal and it tells you the calories and macros; every card charge is logged for you; it nags you to sleep on time and reads your lab reports and watch data.
 
 [中文](README.md) · [English](README.en.md)
 
@@ -14,18 +14,27 @@ It nags you to eat and sleep on time, reads meal photos and lab reports, and ask
 ![Telegram](https://img.shields.io/badge/chat-Telegram-26A5E4?logo=telegram&logoColor=white)
 ![AI](https://img.shields.io/badge/AI-Claude%20or%20compatible%20models-111)
 
-<img src="docs/demo.en.gif" width="440" alt="Mock-up animation: a tap at a known shop is logged after a one-word reply; the nightly ledger comes with a chart and a gentle call-out; a month-end credit-card minimum-spend reminder; a resting-heart-rate trend chart on request">
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/demo-meal.en.gif" width="100%" alt="Mock-up: send a meal photo, get foods, portion, kcal and protein/carbs/fat, logged into today's total"><br><sub>🍱 Meal photo → calories, macros, next-meal advice</sub></td>
+<td align="center" width="50%"><img src="docs/demo-ledger.en.gif" width="100%" alt="Mock-up: bank SMS auto-logged, known shop needs one word, nightly ledger with chart, credit-card minimum-spend reminder"><br><sub>💳 Card tap → auto ledger → nightly summary → card reminder</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="docs/demo-sleep.en.gif" width="100%" alt="Mock-up: bedtime nudges until you say good night, morning audit against watch data"><br><sub>😴 Nudged until "good night" → audited by your watch</sub></td>
+<td align="center"><img src="docs/demo-trend.en.gif" width="100%" alt="Mock-up: 30-day resting heart rate chart and an early 'you might be getting sick' warning"><br><sub>📈 Watch trends → warned 1–2 days before you get sick</sub></td>
+</tr>
+</table>
 
-<sub>Mock-up animation, not a real screenshot. Amounts and calories are fictional.</sub>
+<sub>All mock-up animations, not real screenshots; meals, amounts and values are fictional.</sub>
 
 </div>
 
 ## In 30 seconds
 
-- 🍱 **Eat**: snap a meal photo → food identified, kcal and macros estimated, filed per meal, restaurant remembered
+- 🍱 **Eat**: snap a meal photo → foods and portions identified, kcal + protein/carbs/fat estimated, a one-line comment and a suggestion for the next meal; every meal filed, today's running total always at hand
 - 💸 **Spend (the ledger writes itself)**: your bank's spend SMS is forwarded by your phone → every charge is categorised automatically, card included; food charges are matched to the meal you photographed, taxis / groceries / subscriptions are logged along the way — you type nothing
-- 🧋 **Known shops need no explanation**: it remembers the places you go and what you usually order; next time it just asks "the usual, less sugar?"
-- 👀 **Someone watches your food money**: a small nightly ledger — "food today was 1.6× your usual, that's bubble tea #2" gets a gentle call-out; categories summarised on the 1st of each month
+- 🏪 **Known shops need no explanation**: it remembers the places you go and what you usually order; next time it just asks "the usual?"
+- 👀 **Someone watches your food money**: a small nightly ledger — "food today was 1.6× your usual, that's dessert #2" gets a gentle call-out; categories summarised on the 1st of each month
 - 💳 **Credit-card minimum-spend reminders**: tell it which card needs how much per month for cashback or miles; before month-end it tells you "S$85 to go, 6 days left"
 - 😴 **Sleep**: bedtime nudges that keep coming until you say "good night"; audited against your watch the next morning
 - ⌚ **Body**: your Apple Watch data syncs every hour so it learns what is *normal for you*; resting heart rate + wrist temperature + heart-rate variability all off together → "you may be getting sick" 1–2 days early
@@ -34,6 +43,45 @@ It nags you to eat and sleep on time, reads meal photos and lab reports, and ask
 - 🔒 **Your data stays yours**: everything lives in one folder on your own machine — backing up means copying it. Nothing is sent anywhere except to the AI model service you pick
 
 It uses an AI model (Claude by default) to understand your messages and photos, then a few small tools write the results into your own database. All you do is chat with it on Telegram. Technical details in [How it works](#how-it-works).
+
+## Everything lands in one local database — do whatever you want with it later
+
+Every single thing it records — meals (photo, kcal, macros, where, how much), every card charge (merchant, card, category), sleep, watch metrics, lab reports, bedroom climate — goes into **one SQLite file**: `data/work/db/health.db`. One file: copy it and you have a backup; any tool can open it.
+
+```mermaid
+erDiagram
+    meals ||--o{ payments : "meal_id (charge matched to meal)"
+    merchants ||--o{ payments : "merchant"
+    reports ||--o{ report_items : "report_id"
+    meals }o--|| places : "place"
+    meals { text at "when" text kind "lunch/dinner/drink…" real kcal real protein real carb real fat real cost text place text photo }
+    payments { text received text merchant text card "last 4 digits" real amount text category "food/transport…" }
+    metrics { text metric "resting_heart_rate…" text date real qty real avg }
+    sleep { text date text sleep_start text sleep_end real deep real rem real asleep }
+    report_items { text name "fasting glucose…" text value text ref text flag "H/L" }
+    ha_env { text at text data "temp humidity CO2 JSON" }
+```
+
+| Table | What it holds | Written by |
+|---|---|---|
+| `meals` | each meal: time, type, description, kcal, protein/carbs/fat, portion eaten, cost, place, photo path | agent (`hdb.py meal`) |
+| `places` | restaurants you've been to: area, what you ordered, healthy picks, things to avoid, price, liked or not | agent |
+| `payments` | every charge: time, merchant, amount, currency, card suffix, category, matched meal | `pay_ingest.py` + agent categorisation |
+| `merchants` | merchant memory: category, usual order, visit count | `spend.py cat / learn` |
+| `metrics` | all Apple Health metrics: resting HR, HRV, steps, wrist temperature … hourly/daily | `ingest.py` |
+| `sleep` | each night: sleep start/end, deep / core / REM / awake durations | `ingest.py` |
+| `hae_workouts` / `workouts` | watch workouts / training you reported in chat | `ingest.py` / agent |
+| `reports` + `report_items` | lab report files + every item (value, unit, reference range, H/L flag) | agent |
+| `sleep_log` / `symptoms` | bedtimes you told it, symptoms (itchy throat, headache …) | agent |
+| `ha_env` | bedroom temperature, humidity, CO2, PM2.5, AC/light state, every 10 minutes | `ha.py snap` |
+
+With that one file you can do far more than chat:
+
+- **Ask anything across health and money**: "Do pricier meals mean healthier ones?" "Am I more likely to order delivery the day after a late night?" "Does bubble tea show up in my resting heart rate?" — the agent writes the SQL, you just ask
+- **Look yourself**: `sqlite3 data/work/db/health.db`, or open it in [DB Browser for SQLite](https://sqlitebrowser.org/)
+- **Export**: `sqlite3 -csv data/work/db/health.db "select * from meals" > meals.csv` → Excel / Numbers / Notion
+- **Dashboards**: Grafana (SQLite data source plugin), Metabase, or a few lines of pandas + matplotlib
+- **Train your own models**: years of meals, sleep, heart rate and spending, all aligned on one timeline
 
 ## A day with it
 
@@ -71,7 +119,7 @@ It uses an AI model (Claude by default) to understand your messages and photos, 
 ## Quick start (10 minutes)
 
 ```bash
-git clone https://github.com/JamesNolan17/health-buddy && cd health-buddy
+git clone https://github.com/JamesNolan17/healthy-wealthy && cd healthy-wealthy
 cp .env.example .env && nano .env       # 3 required values + pick one model
 ```
 
@@ -83,7 +131,7 @@ cp .env.example .env && nano .env       # 3 required values + pick one model
 
 ```bash
 docker compose up -d --build
-docker compose logs -f        # wait for "health-buddy up"
+docker compose logs -f        # wait for "healthy-wealthy up"
 ```
 
 6. Say hi to your bot and tell it your goals ("asleep by 1 am", "lose fat"). Its long-term handbook is `data/work/CLAUDE.md`; the "Owner profile" at the end can be filled in by hand.
@@ -188,14 +236,14 @@ flowchart LR
 - **Everything lives in `/data`** — back up one folder; move between an x86 NAS and an ARM VPS by copying it
 
 <details>
-<summary><b>📸 Seven real stories from the author's own health-buddy (numbers replaced with fictional values, translated — click to expand)</b></summary>
+<summary><b>📸 Seven real stories from the author's own healthy-wealthy (numbers replaced with fictional values, translated — click to expand)</b></summary>
 
 **① Zero to working, guided by screenshots**
 
 ```mermaid
 sequenceDiagram
     actor U as Me
-    participant H as 🤖 health-buddy
+    participant H as 🤖 healthy-wealthy
     U->>H: Walk me through it, I have no idea how
     H-->>U: Step 1: open the app, tap Automations, send a screenshot
     U->>H: [screenshot]
@@ -211,7 +259,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor U as Me
-    participant H as 🤖 health-buddy
+    participant H as 🤖 healthy-wealthy
     participant B as 🏦 Bank SMS
     H-->>U: 12:15 Time to go eat — send me the first dish 📸
     U->>H: Your suggestions aren't tasty enough 🥺
@@ -230,7 +278,7 @@ sequenceDiagram
 sequenceDiagram
     actor U as Me
     participant S as 📱 Shortcuts
-    participant H as 🤖 health-buddy
+    participant H as 🤖 healthy-wealthy
     U->>S: Tap card, S$4.20
     S->>H: POST /pay (bank SMS)
     Note over H: wake-on-inbox, < 10 s
@@ -340,7 +388,7 @@ AGENT_CMD=gemini -p "$(cat)"     # prompt on stdin, reply on stdout
 
 ## ⚠️ Disclaimer
 
-health-buddy is **not a medical device and does not give medical advice**. Calorie numbers are estimates; health alerts are hints. If you feel unwell, see a doctor.
+healthy-wealthy is **not a medical device and does not give medical advice**. Calorie numbers are estimates; health alerts are hints. If you feel unwell, see a doctor.
 
 ## License
 

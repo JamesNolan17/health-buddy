@@ -1,4 +1,4 @@
-# health-buddy —— 支持 amd64 / arm64（NAS、树莓派、VPS 都行）
+# healthy-wealthy —— 支持 amd64 / arm64（NAS、树莓派、VPS 都行）
 FROM node:22-bookworm-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \

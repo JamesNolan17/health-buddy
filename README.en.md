@@ -2,18 +2,17 @@
 
 # 🩺 health-buddy
 
-**A self-hosted AI health butler + an expense ledger that writes itself.**
+**A private AI health butler + an expense ledger that writes itself.**
 
-Ten seconds after you tap your card it asks "what did you get, sugar level?". It nags you to eat and sleep on time, reads meal photos and lab reports.<br>
-Your data stays on your own disk, and it only listens to you.
+Runs on your own computer, NAS or cloud box — your data never leaves home.<br>
+It nags you to eat and sleep on time, reads meal photos and lab reports, and asks "what did you get, sugar level?" ten seconds after you tap your card.
 
 [中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-![Docker amd64 / arm64](https://img.shields.io/badge/docker-amd64%20%7C%20arm64-2496ED?logo=docker&logoColor=white)
-![Python 3.9+ stdlib only](https://img.shields.io/badge/python-3.9%2B%20stdlib%20only-3776AB?logo=python&logoColor=white)
+![Runs on](https://img.shields.io/badge/runs%20on-your%20PC%20%7C%20NAS%20%7C%20cloud%20box-2496ED)
 ![Telegram](https://img.shields.io/badge/chat-Telegram-26A5E4?logo=telegram&logoColor=white)
-![Agent](https://img.shields.io/badge/agent-Claude%20Code%20%7C%20Anthropic--compatible%20models-111)
+![AI](https://img.shields.io/badge/AI-Claude%20or%20compatible%20models-111)
 
 <img src="docs/demo.en.gif" width="440" alt="Mock-up animation: 8 seconds after a card tap the bot asks what you bought; you send a receipt photo and it logs the calories and the expense">
 
@@ -24,13 +23,13 @@ Your data stays on your own disk, and it only listens to you.
 ## In 30 seconds
 
 - 🍱 **Eat**: snap a meal photo → food identified, kcal and macros estimated, filed per meal, restaurant remembered
-- 💳 **Spend**: bank spend SMS → iPhone Shortcut forwards it → within 10 s the bot asks "what did you get?" → auto-categorised, food spends matched to the meal you photographed
+- 💳 **Spend**: your bank's spend SMS → your iPhone forwards it automatically → within 10 s the bot asks "what did you get?" → auto-categorised, food spends matched to the meal you photographed
 - 😴 **Sleep**: bedtime nudges that keep coming until you say "good night"; audited against your watch the next morning
-- ⌚ **Body**: hourly Apple Health sync builds *your* baseline; resting HR + wrist temperature + HRV off together → "you may be getting sick" 1–2 days early
-- 🏠 **Home**: Home Assistant bedroom temperature / humidity / CO2 next to your sleep and symptoms
-- 🔒 **All local**: one container, one `data/` folder, one SQLite file. Nothing leaves your machine except what goes to the model API you chose
+- ⌚ **Body**: your Apple Watch data syncs every hour so it learns what is *normal for you*; resting heart rate + wrist temperature + heart-rate variability all off together → "you may be getting sick" 1–2 days early
+- 🏠 **Home**: bedroom temperature / humidity / CO2 (from Home Assistant) next to your sleep and symptoms
+- 🔒 **Your data stays yours**: everything lives in one folder on your own machine — backing up means copying it. Nothing is sent anywhere except to the AI model service you pick
 
-Under the hood it is **Claude Code (or any CLI agent) + a ~200-line, zero-dependency Python bridge**. The bridge handles Telegram, the HTTP inbox and the scheduler; the agent reads `CLAUDE.md` to know who it is and uses the small tools in `bin/` to read and write the database. No framework, no third-party libraries.
+It uses an AI model (Claude by default) to understand your messages and photos, then a few small tools write the results into your own database. All you do is chat with it on Telegram. Technical details in [How it works](#how-it-works).
 
 ## A day with it
 
@@ -160,6 +159,7 @@ First make the inbox reachable from your phone: set `INBOX_BIND` in `.env` to th
                                                                           └ db/health.db SQLite
 ```
 
+- The whole thing = **Claude Code (or any CLI agent) + a ~200-line, zero-dependency Python bridge**. No framework, no third-party libraries
 - **bridge/app.py** — a single file, Python stdlib only: Telegram I/O, inbox receiver, cron scheduler, wake-on-inbox, background jobs
 - **agent** — Claude Code by default (`claude -p --resume`, the session continues automatically). It reads `CLAUDE.md` to know who it is and uses the tools in `bin/` to read and write SQLite; its own notes go to `NOTES.md`
 - **Everything lives in `/data`** — back up one folder; move between an x86 NAS and an ARM VPS by copying it

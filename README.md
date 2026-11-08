@@ -2,18 +2,17 @@
 
 # 🩺 health-buddy
 
-**跑在你自己 NAS 上的 AI 健康管家 + 自动记账本。**
+**本地运行的 AI 健康管家 + 自动记账本。**
 
-刷卡 10 秒后它来问“喝了啥、几分糖”，到点催你吃饭睡觉，看得懂饭照和体检报告。<br>
-数据只留在你的硬盘里，它只听你一个人的话。
+装在你家任意一台电脑、NAS 或云服务器上，数据只留在你自己手里。<br>
+它催你吃饭睡觉、看得懂饭照和体检报告，刷卡 10 秒后就来问“喝了啥、几分糖”。
 
 [中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-![Docker amd64 / arm64](https://img.shields.io/badge/docker-amd64%20%7C%20arm64-2496ED?logo=docker&logoColor=white)
-![Python 3.9+ stdlib only](https://img.shields.io/badge/python-3.9%2B%20stdlib%20only-3776AB?logo=python&logoColor=white)
-![Telegram](https://img.shields.io/badge/chat-Telegram-26A5E4?logo=telegram&logoColor=white)
-![Agent](https://img.shields.io/badge/agent-Claude%20Code%20%7C%20Anthropic--compatible%20models-111)
+![Runs on](https://img.shields.io/badge/%E8%A3%85%E5%9C%A8-%E7%94%B5%E8%84%91%20%7C%20NAS%20%7C%20%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8-2496ED)
+![Telegram](https://img.shields.io/badge/%E8%81%8A%E5%A4%A9-Telegram-26A5E4?logo=telegram&logoColor=white)
+![AI](https://img.shields.io/badge/AI-Claude%20%E6%88%96%E5%85%BC%E5%AE%B9%E6%A8%A1%E5%9E%8B-111)
 
 <img src="docs/demo.zh.gif" width="440" alt="示意动画：刷卡 8 秒后机器人来问喝了啥，发小票照片后自动记下热量和这笔账">
 
@@ -26,11 +25,11 @@
 - 🍱 **吃**：拍张饭照 → 识别食物、估算热量和三大营养素、按顿归档，顺便记住这家店
 - 💳 **花**：银行扣款短信 → iPhone 快捷指令自动转发 → 10 秒内它来问“吃了啥” → 自动分类入账，饭钱自动对上那顿饭
 - 😴 **睡**：到点催你上床，不说“晚安”就一直催；第二天用手表的入睡时间对账
-- ⌚ **身体**：Apple Health 每小时同步，建立你自己的基线；静息心率、手腕温度、HRV 一起异常 → 提前 1-2 天说“你可能要感冒了”
-- 🏠 **家**：Home Assistant 的卧室温湿度、CO2 和你的睡眠、嗓子痒放在一起看
-- 🔒 **全在本地**：一个容器、一个 `data/` 文件夹、一个 SQLite；除了你选的模型 API，不往任何地方发数据
+- ⌚ **身体**：Apple Watch 的数据每小时同步过来，慢慢摸清你平时的水平；静息心率、手腕温度、心率变异性一起不对劲 → 提前 1-2 天说“你可能要感冒了”
+- 🏠 **家**：卧室的温度、湿度、CO2（来自 Home Assistant）和你的睡眠、嗓子痒放在一起看
+- 🔒 **数据在你手里**：所有记录都存在你自己机器上的一个文件夹里，备份就是拷贝它；除了你选的 AI 模型服务，不会发到任何地方
 
-本质上它是 **Claude Code（或任意命令行 agent）+ 一个 200 多行、零依赖的 Python 桥接程序**：桥接程序管 Telegram、HTTP 收件口和定时器；agent 读 `CLAUDE.md` 知道自己是谁，用 `bin/` 里的小工具读写数据库。没有框架，没有第三方库。
+它靠一个 AI 模型（默认 Claude）来理解你的话和照片，再用几个小工具把结果记进你自己的数据库。你只需要在 Telegram 里和它聊天。技术细节见[它是怎么工作的](#它是怎么工作的)。
 
 ## 一天里的它
 
@@ -160,6 +159,7 @@ docker compose logs -f        # 看到 "health-buddy up" 就好了
                                                                             └ db/health.db  SQLite
 ```
 
+- 整体 = **Claude Code（或任意命令行 agent）+ 一个 200 多行、零依赖的 Python 桥接程序**。没有框架，没有第三方库
 - **bridge/app.py**：一个文件、只用 Python 标准库。Telegram 收发、收件口、cron 定时器、收件即唤醒、后台任务都在这里
 - **agent**：默认 Claude Code（`claude -p --resume`，自动续上会话）。它读 `CLAUDE.md` 知道自己是谁、该怎么做，自己用 `bin/` 里的工具读写 SQLite；心得写在 `NOTES.md`
 - **一切都在 `/data`**：备份这一个文件夹就够了；x86 NAS ↔ ARM VPS 直接拷过去

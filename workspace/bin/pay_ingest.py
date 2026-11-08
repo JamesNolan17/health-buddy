@@ -8,6 +8,7 @@ PATS = [dict(p, rx=re.compile(p["regex"])) for p in json.load(open("/data/work/p
 c = sqlite3.connect("/data/work/db/health.db")
 c.execute("""CREATE TABLE IF NOT EXISTS payments(file TEXT PRIMARY KEY, received TEXT, sender TEXT, text TEXT,
   kind TEXT, bank TEXT, currency TEXT, amount REAL, card TEXT, tdate TEXT, merchant TEXT, meal_id INTEGER, handled INTEGER DEFAULT 0, category TEXT)""")
+c.execute("""CREATE TABLE IF NOT EXISTS merchants(merchant TEXT PRIMARY KEY, category TEXT, usual TEXT, note TEXT, times INTEGER DEFAULT 0, last_seen TEXT)""")
 n = 0
 for f in sorted(glob.glob(SRC + "/*.json")):
     b = os.path.basename(f)
@@ -26,7 +27,10 @@ for f in sorted(glob.glob(SRC + "/*.json")):
             dd, mm, yy = g["date"].split("/"); row["tdate"] = f"20{yy}-{mm}-{dd}"
         break
     r = b[:15]; received = f"{r[:4]}-{r[4:6]}-{r[6:8]} {r[9:11]}:{r[11:13]}:{r[13:15]}"
-    c.execute("INSERT OR IGNORE INTO payments(file,received,sender,text,kind,bank,currency,amount,card,tdate,merchant) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
-              (b, received, d.get("sender"), text, row["kind"], row["bank"], row["currency"], row["amount"], row["card"], row["tdate"], row["merchant"]))
+    # 商家记忆：见过的店自动带上分类（spend.py cat / learn 教过的），agent 就不用再问
+    known = c.execute("SELECT category FROM merchants WHERE merchant=?", (row["merchant"],)).fetchone() if row["merchant"] else None
+    c.execute("INSERT OR IGNORE INTO payments(file,received,sender,text,kind,bank,currency,amount,card,tdate,merchant,category) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+              (b, received, d.get("sender"), text, row["kind"], row["bank"], row["currency"], row["amount"], row["card"], row["tdate"], row["merchant"], known[0] if known else None))
+    if known: c.execute("UPDATE merchants SET times=times+1, last_seen=? WHERE merchant=?", (received[:10], row["merchant"]))
     c.commit(); shutil.move(f, os.path.join(ARC, b)); n += 1
 print(f"pay files={n}")

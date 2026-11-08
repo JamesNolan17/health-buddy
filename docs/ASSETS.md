@@ -6,8 +6,8 @@ All images are mock-ups, not real screenshots; every number in them is fictional
 | 文件 | 用途 |
 |---|---|
 | `social-preview.png` | 1280×640，GitHub 仓库的 Social preview（Settings → Social preview 手动上传） |
-| `demo.zh.gif` | README.md 顶部的中文示意动画 |
-| `demo.en.gif` | README.en.md 顶部的英文示意动画 |
+| `demo.zh.gif` | README.md 顶部的中文示意动画（4 幕：熟店记账 → 晚间账单配图 → 信用卡最低消费提醒 → 心率趋势图） |
+| `demo.en.gif` | README.en.md 顶部的英文示意动画（同样 4 幕） |
 
 图片用 Python Pillow 以 2 倍分辨率渲染后 LANCZOS 缩小。字体文件**不在仓库里**，只在生成时下载：
 

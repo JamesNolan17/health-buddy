@@ -1,0 +1,6 @@
+[
+  {"card": "0000", "name": "示例银行 返现卡 / Example Bank cashback card", "currency": "SGD", "min_spend": 500,
+   "note": "每月刷满 500 才有返现；月底前 spend.py cards 会算还差多少 / monthly minimum spend for rewards"},
+  {"card": "1111", "name": "示例 里程卡 / Example miles card", "currency": "SGD", "min_spend": 0,
+   "note": "没有最低消费，只统计 / no minimum, just tracked"}
+]

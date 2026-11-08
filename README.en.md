@@ -14,7 +14,7 @@ It nags you to eat and sleep on time, reads meal photos and lab reports, and ask
 ![Telegram](https://img.shields.io/badge/chat-Telegram-26A5E4?logo=telegram&logoColor=white)
 ![AI](https://img.shields.io/badge/AI-Claude%20or%20compatible%20models-111)
 
-<img src="docs/demo.en.gif" width="440" alt="Mock-up animation: 8 seconds after a card tap the bot asks what you bought; you send a receipt photo and it logs the calories and the expense">
+<img src="docs/demo.en.gif" width="440" alt="Mock-up animation: a tap at a known shop is logged after a one-word reply; the nightly ledger comes with a chart and a gentle call-out; a month-end credit-card minimum-spend reminder; a resting-heart-rate trend chart on request">
 
 <sub>Mock-up animation, not a real screenshot. Amounts and calories are fictional.</sub>
 
@@ -23,9 +23,13 @@ It nags you to eat and sleep on time, reads meal photos and lab reports, and ask
 ## In 30 seconds
 
 - 🍱 **Eat**: snap a meal photo → food identified, kcal and macros estimated, filed per meal, restaurant remembered
-- 💳 **Spend**: your bank's spend SMS → your iPhone forwards it automatically → within 10 s the bot asks "what did you get?" → auto-categorised, food spends matched to the meal you photographed
+- 💸 **Spend (the ledger writes itself)**: your bank's spend SMS is forwarded by your phone → every charge is categorised automatically, card included; food charges are matched to the meal you photographed, taxis / groceries / subscriptions are logged along the way — you type nothing
+- 🧋 **Known shops need no explanation**: it remembers the places you go and what you usually order; next time it just asks "the usual, less sugar?"
+- 👀 **Someone watches your food money**: a small nightly ledger — "food today was 1.6× your usual, that's bubble tea #2" gets a gentle call-out; categories summarised on the 1st of each month
+- 💳 **Credit-card minimum-spend reminders**: tell it which card needs how much per month for cashback or miles; before month-end it tells you "S$85 to go, 6 days left"
 - 😴 **Sleep**: bedtime nudges that keep coming until you say "good night"; audited against your watch the next morning
 - ⌚ **Body**: your Apple Watch data syncs every hour so it learns what is *normal for you*; resting heart rate + wrist temperature + heart-rate variability all off together → "you may be getting sick" 1–2 days early
+- 📈 **Charts on request**: "plot this month's food vs other spending", "resting heart rate, last 30 days" → it sends you a picture
 - 🏠 **Home**: bedroom temperature / humidity / CO2 (from Home Assistant) next to your sleep and symptoms
 - 🔒 **Your data stays yours**: everything lives in one folder on your own machine — backing up means copying it. Nothing is sent anywhere except to the AI model service you pick
 
@@ -38,7 +42,9 @@ It uses an AI model (Claude by default) to understand your messages and photos, 
 | ☀️ 09:00 | Morning report: asleep at 00:58 ✅, HRV above baseline, 10k steps yesterday |
 | 🍱 12:15 | "Time to go eat." You snap a photo → calories estimated, filed under "date_lunch", restaurant remembered |
 | 💳 13:40 | Card charged S$18.50 → matched to that lunch automatically. **You do nothing.** |
-| 🧋 15:06 | Card charged S$4.20 → within 10 s: "4.20 at a tea shop — what did you get? Sugar level?" |
+| 🧋 15:06 | Card charged S$4.20 → within 10 s: "Lemon Tea Co. again — the usual, less sugar?" You reply "yep" and it's logged |
+| 🧾 21:30 | Nightly ledger: "Food today S$46, 1.6× your usual, bubble tea #2 👀 Taxi S$32 logged" |
+| 💳 24th | "Your cashback card ending 0000 is S$85 short of this month's minimum spend, 6 days left — put the next big purchase on it" |
 | 🤒 one day | "Resting HR +9 for two days and wrist temp is up — you may be getting sick. Sleep early tonight." |
 | 🌙 23:00 | "One hour to your bedtime goal." Ignore it? 23:30, 00:00 … until you say good night |
 | 📅 1st of month | "Last month: food S$560, 9 bubble teas S$38, 3 fewer deliveries 👍" |
@@ -139,11 +145,20 @@ First make the inbox reachable from your phone: set `INBOX_BIND` in `.env` to th
 - **Is a Claude subscription OK for this?** `claude setup-token` is Claude Code's official long-lived login for running Claude Code on your own machines; your subscription's rate limits apply
 - **No iPhone?** Android: Health Connect + any app that can POST JSON → `/health` (adapt `ingest.py`); Tasker / MacroDroid POST the SMS to `/pay` with body `{"text": "<sms>"}`
 - **My bank isn't UOB?** Add one regex to `pay_patterns.json` — any bank, any currency. Send the bot a masked SMS and ask it to write the rule
+- **How do I set up card minimum-spend reminders?** Copy `data/work/cards.example.json` to `cards.json` with each card's last 4 digits, name and monthly minimum; on the 24th and 28th it works out what is still missing. Or just tell it in chat: "card ending 0000 needs S$500 a month"
+- **How are the charts made?** The bot installs matplotlib inside its container (`sudo apt-get install python3-matplotlib`); without it you get text bar charts. Spending: `spend.py chart`; health trends: `trend.py`
 - **Does every scheduled job send a message?** Yes, each agent run replies. `CLAUDE.md` tells it to answer with a single 👍 when there's nothing to say. Pure data imports belong in `background.json` (no LLM, no messages)
 - **Will it mess with my home?** `CLAUDE.md` requires asking before adding devices, editing automations or touching other people's rooms; every call is logged in `logs/ha_actions.log`
 - **Moving machines / backups?** Stop the container, copy `data/`, `docker compose up -d`
 - **Are the calories accurate?** Photo estimates are typically off by 20–30 %. The value is in the trend and in actually keeping the log, not in the last digit
 - **Multiple users?** No — one bot, one owner by design. Run one container per person
+
+## Roadmap (not done yet)
+
+- Android paths for health sync and SMS forwarding (only iOS ships today)
+- Monthly report with the spending chart attached automatically (today you ask for it, or add a line to the monthly prompt in `schedules.json`)
+- More banks' SMS formats (a one-line regex PR to `pay_patterns.json` is welcome)
+- A web dashboard: everything lives in Telegram today; for long-term charts ask it to send a PNG
 
 ## How it works
 

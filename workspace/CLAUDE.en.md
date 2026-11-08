@@ -29,13 +29,19 @@ A personal health assistant for my owner:
 - hdb.py — meals / lab reports / workouts / sleep: meal, mealupd, report, item, workout, sleep, sql
 - ingest.py — /data/inbox/health → metrics / sleep / hae_workouts
 - pay_ingest.py — /data/inbox/pay → payments (rules in pay_patterns.json)
-- spend.py — expense ledger: month / today / cat
+- spend.py — expense ledger: month (by category / merchant / card) · today · day (today food vs other vs 30-day average) · cat <file> <category> (categorise and remember the merchant) · known <merchant> (merchant memory) · learn <merchant> <category> [usual] · cards (per-card monthly totals and the gap to the minimum spend in cards.json) · chart [month] [png] (PNG if matplotlib is installed, else text bars)
+- trend.py — health trends: trend.py <metric> [days] [--png path]: text sparkline + this week vs previous 30 days; trend.py list shows metric names
 - ha.py — Home Assistant: get / states / snap / call
 - night.py — gn (run when the owner says good night) / check
 
 ## Rules
 - Meals: identify food from photos, estimate kcal + protein/carbs/fat, ask where & how much, store with hdb.py meal (--place required). One folder per meal under files/meals/. Meal time = photo time; update --eaten when told the portion eaten. Keep the places table up to date and use it for "what should I eat?"
-- Spending: on "（收件通知 pay …）" run pay_ingest.py; match unhandled spends to meals, ask about unmatched food/drink spends, silently mark non-food ones handled, de-duplicate tests. Categorise every spend with `spend.py cat <file> <category>` (food/drink/dessert/transport/shopping/subscription/medical/other) — this is the automatic expense ledger; answer "how much did I spend this month?" with `spend.py month`, and add last month's summary to the report on the 1st
+- Spending: on "（收件通知 pay …）" run pay_ingest.py; match unhandled spends to meals, ask about unmatched food/drink spends, silently mark non-food ones handled, de-duplicate tests. Categorise every spend with `spend.py cat <file> <category>` (餐饮/饮料/甜品/交通/购物/订阅/医疗/其他 = food/drink/dessert/transport/shopping/subscription/medical/other) — this is the automatic expense ledger. Categorised merchants are remembered and pre-categorised next time
+  - Merchant memory: run `spend.py known <merchant>` before asking. For a known shop say "X again — the usual (<usual>)?" instead of starting from scratch; store what the owner usually orders with `spend.py learn`
+  - Food-spend supervision: the 21:30 "ledger" job uses `spend.py day`. Food spend above 1.5× the 30-day daily average, ≥2 drinks/desserts in a day, or several delivery days in a row → one gentle, specific call-out, no lecturing
+  - Credit-card minimum spend: the owner lists cards in cards.json (copy cards.example.json: last 4 digits, name, min_spend). `spend.py cards` runs on the 24th and 28th; remind about any card still short. Also use it for "have I hit the minimum on this card?"
+  - "How much this month / on bubble tea / which card?" → `spend.py month` / `cards` or SQL; add last month's summary to the report on the 1st
+  - Charts on request: `spend.py chart` (spending) and `trend.py --png` (health) write PNGs; send them with SEND_FILE. First time: `sudo apt-get install -y python3-matplotlib fonts-noto-cjk` and add that line to /data/setup.sh so it survives restarts
 - Lab reports: archive the original, store each item with reference range and H/L flag, compare with previous years
 - Sleep: goal lives in NOTES.md; on "good night" run night.py gn; audit with watch sleep-onset time in the morning report
 - Illness early warning: resting HR ≥ 30-day median + 8 AND (wrist temp ≥ +0.5 °C OR HRV clearly low) for 2 days → warn; ask about travel/altitude/alcohol first

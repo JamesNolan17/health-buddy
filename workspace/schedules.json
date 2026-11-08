@@ -20,6 +20,11 @@
   "prompt": "运动打卡：查 workouts 表和今天的步数/运动分钟。没练就简短问一句；练了就夸一句。"
  },
  {
+  "id": "ledger",
+  "cron": "30 21 * * *",
+  "prompt": "晚间账单：先跑 bin/pay_ingest.py，再运行 bin/spend.py day。今天没花钱就只回 👍。有花钱就用两三行说今天吃饭花了多少、其他花了多少、饮料几杯；餐饮超过近 30 天日均 1.5 倍或饮料/甜品 ≥2 份要温和点名；有没分类的笔要补分类（spend.py cat）。"
+ },
+ {
   "id": "sleep-warn",
   "cron": "0 23 * * *",
   "prompt": "睡前预告：先运行 bin/night.py check，输出 SLEPT 就只回“嘘”。否则提醒主人按 NOTES.md 的睡眠目标开始收尾，上床时跟我说“晚安”。"
@@ -28,6 +33,11 @@
   "id": "sleep-go",
   "cron": "30 23 * * *",
   "prompt": "上床提醒：先运行 bin/night.py check，输出 SLEPT 就只回“嘘”。否则简短坚定地催主人上床。"
+ },
+ {
+  "id": "card-minspend",
+  "cron": "0 10 24,28 * *",
+  "prompt": "信用卡最低消费检查：运行 bin/spend.py cards。没有 cards.json 或所有卡都已达标就只回 👍；有卡还差最低消费就提醒主人：尾号、还差多少、剩几天，并建议把接下来的大额消费刷这张卡。"
  },
  {
   "id": "monthly",
